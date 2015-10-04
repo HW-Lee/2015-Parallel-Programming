@@ -1,0 +1,15 @@
+Warning! : Core id 32579 does not exist on this architecture! 
+CPU Affinity is undefined 
+Error parsing CPU mapping string
+INTERNAL ERROR: invalid error code ffffffff (Ring Index out of range) in MPIDI_CH3I_set_affinity:119
+[cli_0]: aborting job:
+Fatal error in MPI_Init:
+Other MPI error, error stack:
+MPIR_Init_thread(514): 
+MPID_Init(359).......: channel initialization failed
+MPIDI_CH3_Init(469)..: 
+
+
+real	0m0.184s
+user	0m0.019s
+sys	0m0.055s
