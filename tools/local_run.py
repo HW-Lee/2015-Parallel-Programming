@@ -7,14 +7,20 @@ def main(argv):
     import getopt
 
     OPTS = [
-        ("n", ":")
+        ("h", ""),
+        ("n", ":"),
+        ("args", "=")
     ]
 
-    USAGE = ""
+    USAGE = "[Usage] [ -n specified node # ] [ --args 'argv1 argv2 argv3 ...' ] [ file1.c file2.c file3.c ... ]"
 
     try:
         opts, args = op.process_opts( argv[1:], OPTS, USAGE )
     except getopt.GetoptError as err: print( err )
+
+    if "h" in opts.keys():
+        print( USAGE )
+        exit(0)
 
     compile_cmd = "mpicc"
     run_cmd = "mpiexec"
@@ -30,7 +36,7 @@ def main(argv):
     # Executing executables
     node_opt = opts.get( "n", "" )
     if len(node_opt) > 0: node_opt = " -npernode " + node_opt
-    cmds = map( lambda x: run_cmd + node_opt + " " + x + " > " + re.sub( "\.o", ".log", x ), outfilenames )
+    cmds = map( lambda x: run_cmd + node_opt + " " + x + " " + opts.get( "args", "" ) + " > " + re.sub( "\.o", ".log", x ), outfilenames )
     map( _print, cmds )
     map( os.system, cmds )
 
