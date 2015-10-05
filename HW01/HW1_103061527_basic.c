@@ -60,6 +60,10 @@ int main( int argc, char* argv[] ) {
     DEBUG_DO( printf( "Hello, world! from process_%d\n", rank ); finalize(); return 0; );
 
     processParameters( argv, &N, &in_file, &out_file );
+    // Currently, the parameters needed in the project have been set up.
+    // N        : the # of integers to be sorted
+    // in_file  : the path of the input file which contains all integers to be sorted
+    // out_file : the path of the output file where the sorted sequence is printed
 
     int* data_buf;
     ROOT_DO( load_file( &in_file, &data_buf, N ) );
