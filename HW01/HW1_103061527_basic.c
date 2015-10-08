@@ -39,6 +39,11 @@ inline void finalize();
 inline void processParameters( char* argv[], int* N, char** in_file, char** out_file );
 inline int getResponsibility( int** resb_proc, int Neven, int size_even, int Nodd, int size_odd, int processId );
 inline int getCommProcessCount( int* resb_proc, int N, int processId, int mode, int** cntMap );
+inline void scatter( int* data_buf, int* resb_proc, int N, int** root_local_data );
+
+inline void op( int* buffer, int* cntMap, int cnt, int mode );
+inline void send( int* buffer, int* cntMap, int cnt );
+inline void recv( int* buffer, int* cntMap, int cnt );
 
 inline void load_file( char** in_file, int** data_buf, int count );
 inline void togglePhase( char* phase );
@@ -118,6 +123,67 @@ int main( int argc, char* argv[] ) {
             );
         }
     );
+
+    int* data_buf;
+    int* local_buffer;
+
+    if ( local_buffersize > 0 ) local_buffer = malloc( local_buffersize * sizeof( int ) );
+
+    ROOT_DO(
+        load_file( &in_file, &data_buf, N );
+
+        DEBUG_DO(
+            printf( "data_buf = [ " );
+            int j;
+            for (j = 0; j < N; j++) printf( "%d ", data_buf[j] );
+            printf( "]\n" );
+        );
+
+        scatter( data_buf, resb_proc, N, &local_buffer );
+    );
+
+    int swapped[2] = { 1, 1 };
+    int* comm_buffer;
+    MPI_Request req;
+
+    if ( local_buffersize > 0 ) {
+        // MPI_Recv ( buf, count, datatype, source, tag, comm, status )
+        if ( rank != ROOT ) MPI_Recv( local_buffer, local_buffersize, MPI_INT, ROOT, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+        comm_buffer = malloc( local_buffersize * sizeof( int ) );
+
+        int j;
+        for (j = 0; j < local_buffersize; j++) comm_buffer[j] = local_buffer[j];
+
+        for (j = 0; j < size; j++) {
+            MPI_Barrier( MPI_COMM_WORLD );
+            PROCESS_DEBUG_DO( j,
+                int k;
+                printf( "local_buffer_%d = [ ", rank );
+                for (k = 0; k < local_buffersize; k++) printf( "%.2d ", local_buffer[k] );
+                printf( "]\n" );
+            );
+        }
+    }
+
+    while( swapped[0] == 1 || swapped[1] == 1 ) {
+        if ( size > 1 ) {
+            // if ( rank % 2 != phase ) send( comm_buffer, send_cntMap, send_cnt );
+            // else recv( comm_buffer, recv_cntMap, recv_cnt );
+        } else {
+            int j;
+            int swap_temp;
+            for (j = phase+1; j < N; j+=2) {
+                if ( compare( data_buf[j-1], data_buf[j] ) == 1 ) {
+                    swap_temp = data_buf[j];
+                    data_buf[j] = data_buf[j-1];
+                    data_buf[j-1] = swap_temp;
+                }
+            }
+        }
+
+        togglePhase( &phase );
+        break;
+    }
 
     finalize();
     return 0;
@@ -228,6 +294,75 @@ int getCommProcessCount( int* resb_proc, int N, int processId, int mode, int** c
     return cnt;
 }
 
+void scatter( int* data_buf, int* resb_proc, int N, int** root_local_data ) {
+    // MPI_Isend ( buf, count, datatype, dest, tag, comm, request )
+    int size = 0;
+    int j;
+
+    for (j = 0; j < N; j++)
+        if ( resb_proc[j] > size ) size = resb_proc[j];
+    size++;
+
+    int* counters = malloc( size * sizeof( int ) );
+    int** buffers = malloc( size * sizeof( int* ) );
+
+    for (j = 0; j < size; j++) {
+        counters[j] = 0;
+        buffers[j] = malloc( N * sizeof( int ) );
+    }
+
+    int target;
+    for (j = 0; j < N; j++) {
+        target = resb_proc[j];
+        if ( target > 0 )
+            buffers[ target ][ counters[target]++ ] = data_buf[j];
+        else
+            ( *root_local_data )[ counters[target]++ ] = data_buf[j];
+    }
+
+    MPI_Request* req = malloc( size * sizeof( MPI_Request ) );
+    for (j = 1; j < size; j++) {
+        if ( counters[j] > 0 )
+            MPI_Isend( buffers[j], counters[j], MPI_INT, j, 0, MPI_COMM_WORLD, &( req[j] ) );
+    }
+
+    for (j = 1; j < size; j++) MPI_Wait( &( req[j] ), MPI_STATUS_IGNORE );
+
+    for (j = 0; j < size; j++) free( buffers[j] );
+    free( buffers );
+    free( counters );
+}
+
+void send( int* buffer, int* cntMap, int cnt ) { op( buffer, cntMap, cnt, SEND_MODE ); }
+void recv( int* buffer, int* cntMap, int cnt ) { op( buffer, cntMap, cnt, RECV_MODE ); }
+
+void op( int* buffer, int* cntMap, int cnt, int mode ) {
+    // cntMap_0 = [ -1: 1 1: 7 ]
+    // MPI_Isend ( buf, count, datatype, dest, tag, comm, request )
+    // MPI_Recv ( buf, count, datatype, source, tag, comm, status )
+
+    int offset = 0;
+    int j;
+    int target, count;
+    MPI_Request req;
+    for (j = 0; j < cnt; j++) {
+        target = cntMap[ 2*j ];
+        count = cntMap[ 2*j+1 ];
+
+        if ( target >= 0 ) {
+            if ( mode == SEND_MODE ) {
+                printf( "MPI_Isend( &( buffer[ %d ] ), %d, MPI_INT, %d, 0, MPI_COMM_WORLD, &req )\n", offset, count, target );
+                // MPI_Isend( &( buffer[ offset ] ), count, MPI_INT, target, 0, MPI_COMM_WORLD, &req );
+            } else {
+                printf( "MPI_Recv( &( buffer[ %d ] ), %d, MPI_INT, %d, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE )\n", offset, count, target );
+                // MPI_Recv( &( buffer[ offset ] ), count, MPI_INT, target, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+            }
+        }
+
+        offset += count;
+    }
+}
+
 void load_file( char** in_file, int** data_buf, int count ) {
     *data_buf = malloc( count * sizeof(int) );
     int i;
@@ -246,7 +381,7 @@ int compare( int a, int b ) {
 void check_if_accurate( int* series, int count ) {
     int i;
     for (i = 1; i < count-1; i++) {
-        if ( compare( series[i-1], series[i] ) != compare( series[i], series[i+1] ) ) {
+        if ( compare( series[i-1], series[i] ) * compare( series[i], series[i+1] ) < 0 ) {
             printf( "Something wrong!!\n" );
             return;
         }
