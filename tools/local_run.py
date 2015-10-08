@@ -8,11 +8,12 @@ def main(argv):
 
     OPTS = [
         ("h", ""),
+        ("t", ""),
         ("n", ":"),
         ("args", "=")
     ]
 
-    USAGE = "[Usage] [ -n specified node # ] [ --args 'argv1 argv2 argv3 ...' ] [ file1.c file2.c file3.c ... ]"
+    USAGE = "[Usage] [ -t time ] [ -n specified node # ] [ --args 'argv1 argv2 argv3 ...' ] [ file1.c file2.c file3.c ... ]"
 
     try:
         opts, args = op.process_opts( argv[1:], OPTS, USAGE )
@@ -22,8 +23,11 @@ def main(argv):
         print( USAGE )
         exit(0)
 
+    if "t" in opts.keys(): run_cmd = "time "
+    else: run_cmd = ""
+
     compile_cmd = "mpicc"
-    run_cmd = "mpiexec"
+    run_cmd += "mpiexec"
     remove_cmd = "rm"
     filenames = args
     outfilenames = map( lambda x: re.sub( "\.c", ".o", x ), filenames )
