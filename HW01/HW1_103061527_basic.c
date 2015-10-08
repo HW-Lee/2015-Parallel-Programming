@@ -21,7 +21,7 @@
  *
  */
 #define ROOT 0
-#define DEBUG 1
+#define DEBUG 0
 #define EVEN_PHASE 0
 #define ODD_PHASE 1
 #define RECV_MODE 0
@@ -40,6 +40,8 @@ inline void processParameters( char* argv[], int* N, char** in_file, char** out_
 inline int getResponsibility( int** resb_proc, int Neven, int size_even, int Nodd, int size_odd, int processId );
 inline int getCommProcessCount( int* resb_proc, int N, int processId, int mode, int** cntMap );
 inline void scatter( int* data_buf, int* resb_proc, int N, int** root_local_data );
+inline int compare_arrays( int* recv_arr, int* orig_arr, int count );
+inline int sync_arrays( int* recv_arr, int* orig_arr, int count ); 
 
 inline void op( int* buffer, int* cntMap, int cnt, int mode );
 inline void send( int* buffer, int* cntMap, int cnt );
@@ -72,6 +74,8 @@ int main( int argc, char* argv[] ) {
     // in_file  : the path of the input file which contains all integers to be sorted
     // out_file : the path of the output file where the sorted sequence is printed
 
+    if ( size >= N ) size = N - 1;
+
     int Nodd = N / 2; // the # of elements in odd index: floor( N/2 )
     int Neven = N - Nodd; // the # of elements in even index: round( N/2 )
     int size_odd = size / 2;
@@ -90,12 +94,12 @@ int main( int argc, char* argv[] ) {
         for (j = 0; j < N; j++) resb_proc[j] = 0;
     }
 
-    ROOT_DEBUG_DO(
-        int j;
-        printf( "resb_proc = [ " );
-        for (j = 0; j < N; j++) printf( "%d ", resb_proc[j] );
-        printf( "]\n" );
-    );
+    // ROOT_DEBUG_DO(
+    //     int j;
+    //     printf( "resb_proc = [ " );
+    //     for (j = 0; j < N; j++) printf( "%d ", resb_proc[j] );
+    //     printf( "]\n" );
+    // );
 
     int* recv_cntMap;
     int* send_cntMap;
@@ -104,25 +108,25 @@ int main( int argc, char* argv[] ) {
     // recv_cntMap = [ processId1, recv_buffersize1, ... , processIdN, recv_buffersizeN ]
     // send_cntMap = [ processId1, send_buffersize1, ... , processIdN, send_buffersizeN ]
 
-    DEBUG_DO(
-        int j;
-        for (j = 0; j < size; j++) {
-            MPI_Barrier( MPI_COMM_WORLD );
-            PROCESS_DO( j,
-                int i;
+    // DEBUG_DO(
+    //     int j;
+    //     for (j = 0; j < size; j++) {
+    //         MPI_Barrier( MPI_COMM_WORLD );
+    //         PROCESS_DO( j,
+    //             int i;
 
-                printf( "process_recv_cntMap_%d = [ ", j );
-                for (i = 0; i < recv_cnt; i++) printf( "%d: %d ", recv_cntMap[2*i], recv_cntMap[2*i+1] );
-                printf( "]\n" );
+    //             printf( "process_recv_cntMap_%d = [ ", j );
+    //             for (i = 0; i < recv_cnt; i++) printf( "%d: %d ", recv_cntMap[2*i], recv_cntMap[2*i+1] );
+    //             printf( "]\n" );
 
-                printf( "process_send_cntMap_%d = [ ", j );
-                for (i = 0; i < send_cnt; i++) printf( "%d: %d ", send_cntMap[2*i], send_cntMap[2*i+1] );
-                printf( "]\n" );
+    //             printf( "process_send_cntMap_%d = [ ", j );
+    //             for (i = 0; i < send_cnt; i++) printf( "%d: %d ", send_cntMap[2*i], send_cntMap[2*i+1] );
+    //             printf( "]\n" );
 
-                MPI_Barrier( MPI_COMM_WORLD );
-            );
-        }
-    );
+    //             MPI_Barrier( MPI_COMM_WORLD );
+    //         );
+    //     }
+    // );
 
     int* data_buf;
     int* local_buffer;
@@ -132,19 +136,18 @@ int main( int argc, char* argv[] ) {
     ROOT_DO(
         load_file( &in_file, &data_buf, N );
 
-        DEBUG_DO(
-            printf( "data_buf = [ " );
-            int j;
-            for (j = 0; j < N; j++) printf( "%d ", data_buf[j] );
-            printf( "]\n" );
-        );
+        // DEBUG_DO(
+        //     printf( "data_buf = [ " );
+        //     int j;
+        //     for (j = 0; j < N; j++) printf( "%d ", data_buf[j] );
+        //     printf( "]\n" );
+        // );
 
         scatter( data_buf, resb_proc, N, &local_buffer );
     );
 
     int swapped[2] = { 1, 1 };
     int* comm_buffer;
-    MPI_Request req;
 
     if ( local_buffersize > 0 ) {
         // MPI_Recv ( buf, count, datatype, source, tag, comm, status )
@@ -154,26 +157,91 @@ int main( int argc, char* argv[] ) {
         int j;
         for (j = 0; j < local_buffersize; j++) comm_buffer[j] = local_buffer[j];
 
-        for (j = 0; j < size; j++) {
-            MPI_Barrier( MPI_COMM_WORLD );
-            PROCESS_DEBUG_DO( j,
-                int k;
-                printf( "local_buffer_%d = [ ", rank );
-                for (k = 0; k < local_buffersize; k++) printf( "%.2d ", local_buffer[k] );
-                printf( "]\n" );
-            );
-        }
+        // for (j = 0; j < size; j++) {
+        //     MPI_Barrier( MPI_COMM_WORLD );
+        //     PROCESS_DEBUG_DO( j,
+        //         int k;
+        //         printf( "local_buffer_%d = [ ", rank );
+        //         for (k = 0; k < local_buffersize; k++) printf( "%.2d ", local_buffer[k] );
+        //         printf( "]\n" );
+        //     );
+        // }
     }
 
-    while( swapped[0] == 1 || swapped[1] == 1 ) {
+    while ( swapped[0] == 1 || swapped[1] == 1 ) {
         if ( size > 1 ) {
-            // if ( rank % 2 != phase ) send( comm_buffer, send_cntMap, send_cnt );
-            // else recv( comm_buffer, recv_cntMap, recv_cnt );
+            if ( rank % 2 != phase ) {
+                int j;
+                for (j = 0; j < local_buffersize; j++) comm_buffer[j] = local_buffer[j];
+            }
+            if ( rank % 2 != phase ) send( comm_buffer, send_cntMap, send_cnt );
+            else recv( comm_buffer, recv_cntMap, recv_cnt );
+
+            // DEBUG_DO(
+            //     int j;
+            //     for (j = 0; j < size; j++) {
+            //         PROCESS_DO( j,
+            //             if ( rank % 2 != phase ) printf( "process_%d sent [ ", rank );
+            //             else printf( "process_%d received [ ", rank );
+            //             int k;
+            //             for (k = 0; k < local_buffersize; k++) printf( "%d ", comm_buffer[k] );
+            //             printf( "]\n" );
+            //         );
+            //         MPI_Barrier( MPI_COMM_WORLD );
+            //     }
+            // );
+
+            int offset, compare_len;
+
+            if ( rank % 2 != phase ) {
+                offset = ( send_cntMap[0] < 0 ) ? 1:0;
+                compare_len = local_buffersize - offset;
+                if ( send_cntMap[ 2*(send_cnt-1) ] < 0 ) compare_len--;
+
+                recv( comm_buffer, send_cntMap, send_cnt );
+                swapped[phase] = sync_arrays( comm_buffer, &( local_buffer[offset] ), compare_len );
+            } else {
+                offset = ( recv_cntMap[0] < 0 ) ? 1:0;
+                compare_len = local_buffersize - offset;
+                if ( recv_cntMap[ 2*(recv_cnt-1) ] < 0 ) compare_len--;
+
+                swapped[phase] = compare_arrays( comm_buffer, &( local_buffer[offset] ), compare_len );
+                send( comm_buffer, recv_cntMap, recv_cnt );
+            }
+
+            // DEBUG_DO(
+            //     int j;
+            //     for (j = 0; j < size; j++) {
+            //         PROCESS_DO( j,
+            //             if ( rank % 2 == phase ) printf( "process_%d sent [ ", rank );
+            //             else printf( "process_%d received [ ", rank );
+            //             int k;
+            //             for (k = 0; k < local_buffersize; k++) printf( "%d ", comm_buffer[k] );
+            //             printf( "]\n" );
+            //         );
+            //         MPI_Barrier( MPI_COMM_WORLD );
+            //     }
+            // );
+
+            // DEBUG_DO(
+            //     int j;
+            //     for (j = 0; j < size; j++) {
+            //         PROCESS_DO( j,
+            //             printf( "local_buffer_%d = [ ", rank );
+            //             int k;
+            //             for (k = 0; k < local_buffersize; k++) printf( "%d ", local_buffer[k] );
+            //             printf( "]\n" );
+            //         );
+            //         MPI_Barrier( MPI_COMM_WORLD );
+            //     }
+            // );
         } else {
+            swapped[phase] = 0;
             int j;
             int swap_temp;
             for (j = phase+1; j < N; j+=2) {
                 if ( compare( data_buf[j-1], data_buf[j] ) == 1 ) {
+                    swapped[phase] = 1;
                     swap_temp = data_buf[j];
                     data_buf[j] = data_buf[j-1];
                     data_buf[j-1] = swap_temp;
@@ -182,8 +250,36 @@ int main( int argc, char* argv[] ) {
         }
 
         togglePhase( &phase );
-        break;
     }
+
+    int** all_data;
+    MPI_Request req;
+
+    if ( rank != ROOT ) {
+        // MPI_Isend ( buf, count, datatype, dest, tag, comm, request )
+        MPI_Isend( local_buffer, local_buffersize, MPI_INT, ROOT, 0, MPI_COMM_WORLD, &req );
+    }
+
+    ROOT_DO(
+        // MPI_Recv ( buf, count, datatype, source, tag, comm, status )
+        all_data = malloc( size * sizeof( int* ) );
+        int j;
+        for (j = 1; j < size; j++) all_data[j] = malloc( N * sizeof( int ) );
+        for (j = 1; j < size; j++) MPI_Recv( all_data[j], N, MPI_INT, j, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+
+        int* counters = malloc( size * sizeof( int ) );
+        int target;
+        for (j = 0; j < size; j++) counters[j] = 0;
+        for (j = 0; j < N; j++) {
+            target = resb_proc[j];
+            if ( target > 0 ) data_buf[j] = all_data[target][ counters[target]++ ];
+            else data_buf[j] = local_buffer[ counters[target]++ ];
+        }
+
+        printf( "data_buf = [ " );
+        for (j = 0; j < N; j++) printf( "%d ", data_buf[j] );
+        printf( "]\n" );
+    );
 
     finalize();
     return 0;
@@ -333,6 +429,35 @@ void scatter( int* data_buf, int* resb_proc, int N, int** root_local_data ) {
     free( counters );
 }
 
+int compare_arrays( int* recv_arr, int* orig_arr, int count ) {
+    int j;
+    int swapped = 0;
+    int swap_temp;
+    for (j = 0; j < count; j++) {
+        if ( compare( orig_arr[j], recv_arr[j] ) == 1 ) {
+            swapped = 1;
+            swap_temp = orig_arr[j];
+            orig_arr[j] = recv_arr[j];
+            recv_arr[j] = swap_temp;
+        }
+    }
+
+    return swapped;
+}
+
+int sync_arrays( int* recv_arr, int* orig_arr, int count ) {
+    int j;
+    int updated = 0;
+    for (j = 0; j < count; j++) {
+        if ( recv_arr[j] != orig_arr[j] ) {
+            updated = 1;
+            orig_arr[j] = recv_arr[j];
+        }
+    }
+
+    return updated;
+}
+
 void send( int* buffer, int* cntMap, int cnt ) { op( buffer, cntMap, cnt, SEND_MODE ); }
 void recv( int* buffer, int* cntMap, int cnt ) { op( buffer, cntMap, cnt, RECV_MODE ); }
 
@@ -344,30 +469,32 @@ void op( int* buffer, int* cntMap, int cnt, int mode ) {
     int offset = 0;
     int j;
     int target, count;
-    MPI_Request req;
+    MPI_Request* req = malloc( cnt * sizeof( MPI_Request ) );
     for (j = 0; j < cnt; j++) {
         target = cntMap[ 2*j ];
         count = cntMap[ 2*j+1 ];
 
         if ( target >= 0 ) {
             if ( mode == SEND_MODE ) {
-                printf( "MPI_Isend( &( buffer[ %d ] ), %d, MPI_INT, %d, 0, MPI_COMM_WORLD, &req )\n", offset, count, target );
-                // MPI_Isend( &( buffer[ offset ] ), count, MPI_INT, target, 0, MPI_COMM_WORLD, &req );
+                // printf( "MPI_Isend( &( buffer[ %d ] ), %d, MPI_INT, %d, 0, MPI_COMM_WORLD, &req )\n", offset, count, target );
+                MPI_Isend( &( buffer[ offset ] ), count, MPI_INT, target, 0, MPI_COMM_WORLD, &( req[j] ) );
             } else {
-                printf( "MPI_Recv( &( buffer[ %d ] ), %d, MPI_INT, %d, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE )\n", offset, count, target );
-                // MPI_Recv( &( buffer[ offset ] ), count, MPI_INT, target, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+                // printf( "MPI_Recv( &( buffer[ %d ] ), %d, MPI_INT, %d, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE )\n", offset, count, target );
+                MPI_Recv( &( buffer[ offset ] ), count, MPI_INT, target, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
             }
-        }
+        } else if ( mode == RECV_MODE ) offset -= count;
 
         offset += count;
     }
+
+    // for (j = 0; j < cnt; j++) MPI_Wait( &( req[j] ), MPI_STATUS_IGNORE );
 }
 
 void load_file( char** in_file, int** data_buf, int count ) {
     *data_buf = malloc( count * sizeof(int) );
     int i;
     for (i = 0; i < count; i++)
-        (*data_buf)[i] = count - i;
+        (*data_buf)[i] = (count - i);
 }
 
 void togglePhase( char* phase ) { *phase = (*phase + 1) % 2; }
