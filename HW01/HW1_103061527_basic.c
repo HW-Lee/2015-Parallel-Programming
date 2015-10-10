@@ -121,7 +121,8 @@ int main( int argc, char* argv[] ) {
             //      even-phase starts at local_buf_pos+1/local_buf_pos+2 (even/odd)
             //       odd-phase starts at local_buf_pos/local_buf_pos+1 (even/odd)
             for (j = phase + 1; j < N; j+=2) {
-                if ( j <= local_buf_pos || j >= local_buf_pos + local_bufsize ) continue;
+                if ( j >= local_buf_pos + local_bufsize ) break;
+                if ( j <= local_buf_pos ) continue;
                 // printf( "compare( %d, %d ) by process%d\n", local_buf[ j - local_buf_pos - 1 ], local_buf[ j - local_buf_pos ], rank );
                 if ( compare( local_buf[ j - local_buf_pos - 1 ], local_buf[ j - local_buf_pos ] ) == 1 ) {
                     swapped[phase] = 1;
