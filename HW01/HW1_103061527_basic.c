@@ -9,14 +9,9 @@
  *
  */
 #define ROOT 0
-#define DEBUG 1
 #define EVEN_PHASE 0
 #define ODD_PHASE 1
-#define RECV_MODE 0
-#define SEND_MODE 1
 
-
-inline void check_if_accurate( int* buf, int count );
 inline void toggle_phase( char* phase );
 inline int compare( int a, int b );
 
@@ -64,14 +59,6 @@ int main( int argc, char* argv[] ) {
     int i;
     for (i = 0; i < data_bufsize - N; i++) data_buf[ N + i ] = INT_MAX;
 
-    // if ( rank == ROOT ) {
-    //     for (i = 0; i < data_bufsize; i++)
-    //         printf( "%d ", data_buf[i] );
-    //     printf( "\n" );
-    // }
-
-    // MPI_Barrier( MPI_COMM_WORLD );
-
     int local_bufsize = data_bufsize / size;
     int* local_buf = malloc( local_bufsize * sizeof( int ) );
 
@@ -79,14 +66,6 @@ int main( int argc, char* argv[] ) {
         for (i = 0; i < local_bufsize; i++) local_buf[i] = data_buf[ rank * local_bufsize + i ];
 
     if ( rank != ROOT ) free( data_buf );
-
-    // int j;
-    // for (j = 0; j < size; j++) {
-    //     for (i = 0; i < local_bufsize; i++) {
-    //         if ( rank == j ) { printf( "%d ", local_buf[i] ); if ( i == local_bufsize-1 ) printf( "\n" ); }
-    //         MPI_Barrier( MPI_COMM_WORLD );
-    //     }
-    // }
 
     int msg_buf;
     int msg_recved, msg_sent;
@@ -122,7 +101,7 @@ int main( int argc, char* argv[] ) {
             //       odd-phase starts at local_buf_pos/local_buf_pos+1 (even/odd)
             for (j = phase + 1; j < N; j+=2) {
                 if ( j <= local_buf_pos || j >= local_buf_pos + local_bufsize ) continue;
-                // printf( "compare( %d, %d ) by process%d\n", local_buf[ j - local_buf_pos - 1 ], local_buf[ j - local_buf_pos ], rank );
+
                 if ( compare( local_buf[ j - local_buf_pos - 1 ], local_buf[ j - local_buf_pos ] ) == 1 ) {
                     swapped[phase] = 1;
                     swap_temp = local_buf[ j - local_buf_pos - 1 ];
@@ -132,7 +111,6 @@ int main( int argc, char* argv[] ) {
             }
 
             if ( msg_recved == 1 ) {
-                // printf( "compare( %d, %d ) by process%d\n", local_buf[ local_bufsize-1 ], msg_buf, rank );
                 if ( compare( local_buf[ local_bufsize-1 ], msg_buf ) == 1 ) {
                     swapped[phase] = 1;
                     swap_temp = local_buf[ local_bufsize-1 ];
@@ -147,8 +125,6 @@ int main( int argc, char* argv[] ) {
                 if ( msg_buf != local_buf[0] ) swapped[phase] = 1;
                 local_buf[0] = msg_buf;
             }
-        } else {
-            printf( "process%d is redundant\n", rank );
         }
 
         // MPI_Allreduce (send_buf, recv_buf, count, data_type, op, comm)
@@ -161,7 +137,6 @@ int main( int argc, char* argv[] ) {
     MPI_Gather( local_buf, local_bufsize, MPI_INT, data_buf, local_bufsize, MPI_INT, ROOT, MPI_COMM_WORLD );
 
     if ( rank == ROOT ) {
-        // check_if_accurate( data_buf, N );
         FILE* f = fopen( out_file, "wb" );
         fwrite( data_buf, sizeof( int ), N, f );
     }
@@ -179,15 +154,4 @@ int compare( int a, int b ) {
     if ( a > b ) return 1;
     if ( b > a ) return -1;
     return 0;
-}
-
-void check_if_accurate( int* buf, int count ) {
-    int j;
-    for (j = 0; j < count-1; j++) {
-        if ( compare( buf[j], buf[j+1] ) == 1 ) {
-            printf( "Something wrong!\n" );
-            return;
-        }
-    }
-    printf( "The function works well!!\n" );
 }
