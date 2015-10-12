@@ -71,8 +71,10 @@ def _dummy_run_script( pkg ):
 	os.system( "rm " + job_name + ".*" )
 
 def _process_file( path, job_name, nodes_num, ppn ):
-	file_name = str( job_name ) + "_nodes=" + str( nodes_num ) + ":ppn=" + str( ppn ) + ".txt"
-	os.system( "cp " + path + " ./" + file_name )
+	file_name = str( job_name ) + "_nodes=" + str( nodes_num ) + ":ppn=" + str( ppn ) + ".json"
+	with open( path, "r" ) as f: content = f.read()
+	with open( file_name, "w" ) as f: f.write( "[" + "},".join( content.split( "}" )[0:-1] ) + "}]\n" )
+
 	print( "generate report: " + file_name )
 
 def _print( arg ):
