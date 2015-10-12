@@ -59,7 +59,7 @@ def gen_job_script(queue_mode="debug", job_name="MY_JOB", rerunnable="n", nodes_
     info.append( "cd $PBS_O_WORKDIR" )
     info.append( "time mpiexec " + exec_cmd )
 
-    print( "\n".join(info) )
+    if __name__ == "__main__": print( "\n".join(info) )
 
     with open( outpath, "w" ) as f:
         f.write( "\n".join(info) )
