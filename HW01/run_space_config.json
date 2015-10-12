@@ -1,0 +1,99 @@
+{
+	"queue_mode": "batch",
+	"job_name": "HW1_job",
+	"rerunnable": "n",
+	"exec_cmd": "./HW1_103061527 65537 ../../shared/hw1/testcase/testcase8 ./output_test",
+	"outpath_prefix": "job",
+	"res_configs": [
+		{
+			"nodes_num": 1,
+			"ppn": 1,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 2,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 3,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 4,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 5,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 6,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 7,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 8,
+			"wt": "00:02:00"
+		}, 
+		{
+			"nodes_num": 2,
+			"ppn": 1,
+			"wt": "00:02:00"
+		},
+		{
+			"nodes_num": 3,
+			"ppn": 1,
+			"wt": "00:02:00"
+		},
+		{
+			"nodes_num": 2,
+			"ppn": 2,
+			"wt": "00:02:00"
+		},
+		{
+			"nodes_num": 2,
+			"ppn": 3,
+			"wt": "00:02:00"
+		},
+		{
+			"nodes_num": 2,
+			"ppn": 4,
+			"wt": "00:02:00"
+		},
+		{
+			"nodes_num": 3,
+			"ppn": 3,
+			"wt": "00:02:00"
+		},
+		{
+			"nodes_num": 2,
+			"ppn": 5,
+			"wt": "00:02:00"
+		},
+		{
+			"nodes_num": 3,
+			"ppn": 4,
+			"wt": "00:02:00"
+		},
+		{
+			"nodes_num": 2,
+			"ppn": 7,
+			"wt": "00:02:00"
+		},
+		{
+			"nodes_num": 3,
+			"ppn": 5,
+			"wt": "00:02:00"
+		}
+	]
+}
