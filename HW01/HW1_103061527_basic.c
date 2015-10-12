@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <time.h>
 #include <mpi.h>
 
 /*
@@ -21,6 +22,8 @@ inline int compare( int a, int b );
  *
  */
 int main( int argc, char* argv[] ) {
+    clock_t start, end;
+    double IO_millis = 0, comm_millis = 0, comp_millis = 0, sync_millis = 0;
     int rank, size;
 
     MPI_Init( &argc, &argv );
@@ -50,11 +53,19 @@ int main( int argc, char* argv[] ) {
     int* data_buf = malloc( ( size + red_process_num ) * ( data_bufsize / size ) * sizeof( int ) );
     MPI_File f;
 
+    start = clock();
+    MPI_Barrier( MPI_COMM_WORLD );
+    end = clock();
+    sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+
+    start = clock();
     // MPI_File_open (MPI_Comm comm, char *filename, int amode, MPI_Info info, MPI_File *fh)
     MPI_File_open( MPI_COMM_WORLD, in_file, MPI_MODE_RDONLY, MPI_INFO_NULL, &f );
 
     // MPI_File_read (MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)
     MPI_File_read( f, data_buf, N, MPI_INT, MPI_STATUS_IGNORE );
+    end = clock();
+    IO_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
 
     int i;
     for (i = 0; i < data_bufsize - N; i++) data_buf[ N + i ] = INT_MAX;
@@ -74,6 +85,8 @@ int main( int argc, char* argv[] ) {
     int swapped[2] = { 1, 1 };
     int sync_swapped[2] = { 1, 1 };
 
+    int swap_temp;
+
     while ( sync_swapped[0] > 0 || sync_swapped[1] > 0 ) {
         msg_recved = 0;
         msg_sent = 0;
@@ -82,23 +95,34 @@ int main( int argc, char* argv[] ) {
         if ( rank < size ) {
             // Send: even-phase when pos is odd; odd-phase when pos is even
             if ( rank > 0 && local_buf_pos % 2 != phase ) {
-                // printf( "process%d sent data_buf[%d]: %d\n", rank, local_buf_pos, local_buf[0] );
+                start = clock();
                 MPI_Send( &( local_buf[0] ), 1, MPI_INT, rank-1, 0, MPI_COMM_WORLD );
+                end = clock();
+                comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
                 msg_sent = 1;
             }
 
             // Recv: even-phase when pos+bufsize-1 is even, odd-phase when pos+bufsize-1 is odd
             if ( rank < size-1 && ( local_buf_pos + local_bufsize - 1 ) % 2 == phase ) {
+                start = clock();
                 MPI_Recv( &msg_buf, 1, MPI_INT, rank+1, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
-                // printf( "process%d received %d\n", rank, msg_buf );
+                end = clock();
+                comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
                 msg_recved = 1;
             }
+        }
 
+        start = clock();
+        MPI_Barrier( MPI_COMM_WORLD );
+        end = clock();
+        sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+
+        if ( rank < size ) {
             int j;
-            int swap_temp;
             // Compare:
             //      even-phase starts at local_buf_pos+1/local_buf_pos+2 (even/odd)
             //       odd-phase starts at local_buf_pos/local_buf_pos+1 (even/odd)
+            start = clock();
             for (j = phase + 1; j < N; j+=2) {
                 if ( j >= local_buf_pos + local_bufsize ) break;
                 if ( j <= local_buf_pos ) continue;
@@ -110,37 +134,94 @@ int main( int argc, char* argv[] ) {
                     local_buf[ j - local_buf_pos ] = swap_temp;
                 }
             }
+            end = clock();
+            comp_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+        }
 
+        start = clock();
+        MPI_Barrier( MPI_COMM_WORLD );
+        end = clock();
+        sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+
+        if ( rank < size ) {
             if ( msg_recved == 1 ) {
+                start = clock();
                 if ( compare( local_buf[ local_bufsize-1 ], msg_buf ) == 1 ) {
                     swapped[phase] = 1;
                     swap_temp = local_buf[ local_bufsize-1 ];
                     local_buf[ local_bufsize-1 ] = msg_buf;
                     msg_buf = swap_temp;
                 }
-                MPI_Send( &msg_buf, 1, MPI_INT, rank+1, 0, MPI_COMM_WORLD );
-            }
+                end = clock();
+                comp_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
 
-            if ( msg_sent == 1 ) {
-                MPI_Recv( &msg_buf, 1, MPI_INT, rank-1, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
-                if ( msg_buf != local_buf[0] ) swapped[phase] = 1;
-                local_buf[0] = msg_buf;
+                start = clock();
+                MPI_Send( &msg_buf, 1, MPI_INT, rank+1, 0, MPI_COMM_WORLD );
+                end = clock();
+                comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
             }
         }
 
+        start = clock();
+        MPI_Barrier( MPI_COMM_WORLD );
+        end = clock();
+        sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+
+        if ( rank < size ) {
+            if ( msg_sent == 1 ) {
+                start = clock();
+                MPI_Recv( &msg_buf, 1, MPI_INT, rank-1, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+                end = clock();
+                comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+
+                start = clock();
+                if ( msg_buf != local_buf[0] ) swapped[phase] = 1;
+                local_buf[0] = msg_buf;
+                end = clock();
+                comp_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+            }
+        }
+
+        start = clock();
+        MPI_Barrier( MPI_COMM_WORLD );
+        end = clock();
+        sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+
+        start = clock();
         // MPI_Allreduce (send_buf, recv_buf, count, data_type, op, comm)
         MPI_Allreduce( &( swapped[phase] ), &( sync_swapped[phase] ), 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+        end = clock();
+        comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
 
         toggle_phase( &phase );
     }
 
+    start = clock();
+    MPI_Barrier( MPI_COMM_WORLD );
+    end = clock();
+    sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+
+    start = clock();
     // MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
     MPI_Gather( local_buf, local_bufsize, MPI_INT, data_buf, local_bufsize, MPI_INT, ROOT, MPI_COMM_WORLD );
+    end = clock();
+    comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
 
     if ( rank == ROOT ) {
+        start = clock();
         FILE* f = fopen( out_file, "wb" );
         fwrite( data_buf, sizeof( int ), N, f );
+        end = clock();
+        IO_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
     }
+
+    start = clock();
+    MPI_Barrier( MPI_COMM_WORLD );
+    end = clock();
+    sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+
+    printf( "{\n\t\"id\": %d,\n\t\"i/o\": %.3f,\n\t\"comm\": %.3f,\n\t\"sync\": %.3f\n\t\"comp\": %.3f\n}\n", 
+        rank, IO_millis, comm_millis, sync_millis, comp_millis );
 
     MPI_Barrier( MPI_COMM_WORLD );
     MPI_Finalize();
