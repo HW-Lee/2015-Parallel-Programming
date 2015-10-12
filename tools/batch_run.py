@@ -32,8 +32,10 @@ def main( argv ):
 	map( _print, single_node_list )
 	print( "------------------------" )
 	map ( _print, multi_node_list )
+	print( "------------------------" )
 
 	map( _dummy_run_script, single_node_list )
+	map( _dummy_run_script, multi_node_list )
 	print( "" )
 
 	exit(0)
