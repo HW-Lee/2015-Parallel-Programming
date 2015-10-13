@@ -67,7 +67,6 @@ int main( int argc, char* argv[] ) {
 
     int i;
     for (i = 0; i < data_bufsize - N; i++) data_buf[ N + i ] = INT_MAX;
-    // for (i = 0; i < N; i++) data_buf[i] = N - i;
 
     int local_bufsize = data_bufsize / size;
     int* local_buf = malloc( local_bufsize * sizeof( int ) );
@@ -75,19 +74,13 @@ int main( int argc, char* argv[] ) {
     if ( rank < size ) {
         for (i = 0; i < local_bufsize; i++) local_buf[i] = data_buf[ rank * local_bufsize + i ];
         merge_sort( local_buf, local_bufsize );
-
-        // for (i = 0; i < local_bufsize; i++) printf( "%d local_buf[%d] = %d\n", rank, i, local_buf[i] );
     }
 
     if ( rank != ROOT ) free( data_buf );
 
-    int local_buf_pos = rank * local_bufsize; // it means local_buf[0] == data_buf[local_buf_pos]
     int updated = 1;
     int local_updated;
     int send_msg, recv_msg;
-    int swap_temp;
-
-    int iter = 0;
 
     while ( updated > 0 && size > 1 ) {
 
@@ -97,11 +90,9 @@ int main( int argc, char* argv[] ) {
             if ( rank > ROOT ) {
                 send_msg = local_buf[0];
                 MPI_Send( &send_msg, 1, MPI_INT, rank-1, 0, MPI_COMM_WORLD );
-                // printf( "[%.3d]%d send %d to %d\n", iter, rank, send_msg, rank-1 );
             }
             if ( rank < size-1 ) {
                 MPI_Recv( &recv_msg, 1, MPI_INT, rank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
-                // printf( "[%.3d]%d receive %d from %d\n", iter, rank, recv_msg, rank+1 );
             }
         }
 
@@ -133,13 +124,7 @@ int main( int argc, char* argv[] ) {
             insert_and_kick( local_buf, local_bufsize, &recv_msg );
         }
 
-        // int j;
-        // for (j = 0; j < local_bufsize; j++) printf( "[%.3d]%d local_buf[%.3d] = %d\n", iter, rank, j, local_buf[j] );
-
         MPI_Allreduce( &local_updated, &updated, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
-        // if ( rank == size-1 ) printf( "[%.3d]%d updated = %d\n", iter, rank, updated );
-
-        // iter++;
     }
 
     // MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
@@ -148,8 +133,6 @@ int main( int argc, char* argv[] ) {
     if ( rank == ROOT ) {
         FILE* f = fopen( out_file, "wb" );
         fwrite( data_buf, sizeof( int ), N, f );
-        int j;
-        for (j = 0; j < N; j++) printf( "%d data_buf[%.3d] = %d\n", rank, j, data_buf[j] );
     }
 
     MPI_Barrier( MPI_COMM_WORLD );
