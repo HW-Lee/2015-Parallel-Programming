@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <time.h>
 #include <mpi.h>
 
 /*
@@ -9,11 +10,15 @@
  *
  */
 #define ROOT 0
-#define EVEN_PHASE 0
-#define ODD_PHASE 1
+#define DIR_RIGHT 0
+#define DIR_LEFT 1
 
-inline void toggle_phase( char* phase );
 inline int compare( int a, int b );
+
+inline void _merge_sort_recur( int* arr, int* reg, int start_idx, int end_idx );
+inline void merge_sort( int* arr, int count );
+inline void insert_and_kick( int* arr, int count, int* inserted_n_kicked );
+inline void shift_array( int* arr, int count, int dist, int dir );
 
 /*
  *
@@ -21,6 +26,8 @@ inline int compare( int a, int b );
  *
  */
 int main( int argc, char* argv[] ) {
+    clock_t start, end;
+    double IO_millis = 0, comm_millis = 0, comp_millis = 0, sync_millis = 0;
     int rank, size;
 
     MPI_Init( &argc, &argv );
@@ -30,7 +37,6 @@ int main( int argc, char* argv[] ) {
     int N;
     char* in_file;
     char* out_file;
-    char phase = EVEN_PHASE;
 
     N = atoi( argv[1] );
     in_file = argv[2];
@@ -41,9 +47,12 @@ int main( int argc, char* argv[] ) {
     // out_file : the path of the output file where the sorted sequence is printed
 
     int red_process_num = 0;
-    if ( size > N ) {
-        red_process_num = size - N;
-        size = N;
+    if ( N < 20 ) {
+        red_process_num = size - 1;
+        size = 1;
+    } else if ( size > N/4 ) {
+        red_process_num = size - N/4;
+        size = N/4;
     }
 
     int data_bufsize = ( N % size > 0 ) ? ( N + size - ( N % size ) ) : N;
@@ -58,79 +67,79 @@ int main( int argc, char* argv[] ) {
 
     int i;
     for (i = 0; i < data_bufsize - N; i++) data_buf[ N + i ] = INT_MAX;
+    // for (i = 0; i < N; i++) data_buf[i] = N - i;
 
     int local_bufsize = data_bufsize / size;
     int* local_buf = malloc( local_bufsize * sizeof( int ) );
 
-    if ( rank < size )
+    if ( rank < size ) {
         for (i = 0; i < local_bufsize; i++) local_buf[i] = data_buf[ rank * local_bufsize + i ];
+        merge_sort( local_buf, local_bufsize );
+
+        // for (i = 0; i < local_bufsize; i++) printf( "%d local_buf[%d] = %d\n", rank, i, local_buf[i] );
+    }
 
     if ( rank != ROOT ) free( data_buf );
 
-    int msg_buf;
-    int msg_recved, msg_sent;
     int local_buf_pos = rank * local_bufsize; // it means local_buf[0] == data_buf[local_buf_pos]
+    int updated = 1;
+    int local_updated;
+    int send_msg, recv_msg;
+    int swap_temp;
 
-    int swapped[2] = { 1, 1 };
-    int sync_swapped[2] = { 1, 1 };
+    int iter = 0;
 
-    while ( sync_swapped[0] > 0 || sync_swapped[1] > 0 ) {
-        msg_recved = 0;
-        msg_sent = 0;
-        swapped[phase] = 0;
+    while ( updated > 0 && size > 1 ) {
+
+        local_updated = 0;
 
         if ( rank < size ) {
-            // Send: even-phase when pos is odd; odd-phase when pos is even
-            if ( rank > 0 && local_buf_pos % 2 != phase ) {
-                // printf( "process%d sent data_buf[%d]: %d\n", rank, local_buf_pos, local_buf[0] );
-                MPI_Send( &( local_buf[0] ), 1, MPI_INT, rank-1, 0, MPI_COMM_WORLD );
-                msg_sent = 1;
+            if ( rank > ROOT ) {
+                send_msg = local_buf[0];
+                MPI_Send( &send_msg, 1, MPI_INT, rank-1, 0, MPI_COMM_WORLD );
+                // printf( "[%.3d]%d send %d to %d\n", iter, rank, send_msg, rank-1 );
             }
-
-            // Recv: even-phase when pos+bufsize-1 is even, odd-phase when pos+bufsize-1 is odd
-            if ( rank < size-1 && ( local_buf_pos + local_bufsize - 1 ) % 2 == phase ) {
-                MPI_Recv( &msg_buf, 1, MPI_INT, rank+1, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
-                // printf( "process%d received %d\n", rank, msg_buf );
-                msg_recved = 1;
-            }
-
-            int j;
-            int swap_temp;
-            // Compare:
-            //      even-phase starts at local_buf_pos+1/local_buf_pos+2 (even/odd)
-            //       odd-phase starts at local_buf_pos/local_buf_pos+1 (even/odd)
-            for (j = phase + 1; j < N; j+=2) {
-                if ( j <= local_buf_pos || j >= local_buf_pos + local_bufsize ) continue;
-
-                if ( compare( local_buf[ j - local_buf_pos - 1 ], local_buf[ j - local_buf_pos ] ) == 1 ) {
-                    swapped[phase] = 1;
-                    swap_temp = local_buf[ j - local_buf_pos - 1 ];
-                    local_buf[ j - local_buf_pos - 1 ] = local_buf[ j - local_buf_pos ];
-                    local_buf[ j - local_buf_pos ] = swap_temp;
-                }
-            }
-
-            if ( msg_recved == 1 ) {
-                if ( compare( local_buf[ local_bufsize-1 ], msg_buf ) == 1 ) {
-                    swapped[phase] = 1;
-                    swap_temp = local_buf[ local_bufsize-1 ];
-                    local_buf[ local_bufsize-1 ] = msg_buf;
-                    msg_buf = swap_temp;
-                }
-                MPI_Send( &msg_buf, 1, MPI_INT, rank+1, 0, MPI_COMM_WORLD );
-            }
-
-            if ( msg_sent == 1 ) {
-                MPI_Recv( &msg_buf, 1, MPI_INT, rank-1, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
-                if ( msg_buf != local_buf[0] ) swapped[phase] = 1;
-                local_buf[0] = msg_buf;
+            if ( rank < size-1 ) {
+                MPI_Recv( &recv_msg, 1, MPI_INT, rank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+                // printf( "[%.3d]%d receive %d from %d\n", iter, rank, recv_msg, rank+1 );
             }
         }
 
-        // MPI_Allreduce (send_buf, recv_buf, count, data_type, op, comm)
-        MPI_Allreduce( &( swapped[phase] ), &( sync_swapped[phase] ), 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+        if ( rank < size && rank < size-1 ) {
+            send_msg = recv_msg;
+            if ( compare( recv_msg, local_buf[ local_bufsize-1 ] ) < 1 ) {
+                local_updated = 1;
+                send_msg = local_buf[ local_bufsize-1 ];
+                local_buf[ local_bufsize-1 ] = recv_msg;
+            }
+        }
 
-        toggle_phase( &phase );
+        if ( rank < size ) {
+            if ( rank < size-1 ) MPI_Send( &send_msg, 1, MPI_INT, rank+1, 0, MPI_COMM_WORLD );
+            if ( rank > ROOT ) MPI_Recv( &recv_msg, 1, MPI_INT, rank-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+        }
+
+        if ( rank < size && rank > ROOT ) {
+            shift_array( local_buf, local_bufsize, 1, DIR_LEFT );
+            local_buf[ local_bufsize-1 ] = recv_msg;
+        }
+
+        if ( rank < size ) {
+            send_msg = local_buf[ local_bufsize-1 ];
+            recv_msg = local_buf[ local_bufsize-2 ];
+            local_buf[ local_bufsize-1 ] = INT_MAX;
+            local_buf[ local_bufsize-2 ] = INT_MAX;
+            insert_and_kick( local_buf, local_bufsize, &send_msg );
+            insert_and_kick( local_buf, local_bufsize, &recv_msg );
+        }
+
+        // int j;
+        // for (j = 0; j < local_bufsize; j++) printf( "[%.3d]%d local_buf[%.3d] = %d\n", iter, rank, j, local_buf[j] );
+
+        MPI_Allreduce( &local_updated, &updated, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+        // if ( rank == size-1 ) printf( "[%.3d]%d updated = %d\n", iter, rank, updated );
+
+        // iter++;
     }
 
     // MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
@@ -139,6 +148,8 @@ int main( int argc, char* argv[] ) {
     if ( rank == ROOT ) {
         FILE* f = fopen( out_file, "wb" );
         fwrite( data_buf, sizeof( int ), N, f );
+        int j;
+        for (j = 0; j < N; j++) printf( "%d data_buf[%.3d] = %d\n", rank, j, data_buf[j] );
     }
 
     MPI_Barrier( MPI_COMM_WORLD );
@@ -146,12 +157,73 @@ int main( int argc, char* argv[] ) {
     return 0;
 }
 
-void toggle_phase( char* phase ) {
-    *phase = ( *phase + 1 ) % 2;
-}
-
 int compare( int a, int b ) {
     if ( a > b ) return 1;
     if ( b > a ) return -1;
     return 0;
+}
+
+void shift_array( int* arr, int count, int dist, int dir ) {
+    int j;
+
+    if ( dir == DIR_RIGHT ) for (j = count-1; j >= dist; j--) arr[j] = arr[ j-dist ];
+    else for (j = 0; j < count-dist; j++) arr[j] = arr[ j+dist ];
+}
+
+void _merge_sort_recur( int* arr, int* reg, int start_idx, int end_idx ) {
+    if ( start_idx >= end_idx ) return;
+
+    int mid = ( ( end_idx - start_idx ) >> 1 ) + start_idx;
+    int start1 = start_idx, end1 = mid;
+    int start2 = mid + 1, end2 = end_idx;
+
+    _merge_sort_recur( arr, reg, start1, end1 );
+    _merge_sort_recur( arr, reg, start2, end2 );
+
+    int k = start_idx;
+    while ( start1 <= end1 && start2 <= end2 )
+        reg[ k++ ] = ( compare( arr[ start1 ], arr[ start2 ] ) == -1 ) ? arr[ start1++ ] : arr[ start2++ ];
+
+    while ( start1 <= end1 ) reg[ k++ ] = arr[ start1++ ];
+    while ( start2 <= end2 ) reg[ k++ ] = arr[ start2++ ];
+
+    for (k = start_idx; k <= end_idx; k++) arr[k] = reg[k];
+}
+
+void merge_sort( int* arr, int count ) {
+    int* reg = malloc( count * sizeof( int ) );
+    _merge_sort_recur( arr, reg, 0, count-1 );
+}
+
+void insert_and_kick( int* arr, int count, int* inserted_n_kicked ) {
+    int start_idx = 0, end_idx = count - 1;
+    int mid, comp_result;
+    int swap_temp, j;
+
+    if ( compare( *inserted_n_kicked, arr[ end_idx ] ) >= 0 ) return;
+
+    if ( compare( *inserted_n_kicked, arr[ start_idx ] ) <= 0 ) {
+        swap_temp = *inserted_n_kicked;
+        *inserted_n_kicked = arr[ end_idx ];
+        for (j = end_idx; j > 0; j--) arr[ j ] = arr[ j-1 ];
+        arr[ start_idx ] = swap_temp;
+        return;
+    }
+
+    while ( end_idx - start_idx > 1 ) {
+        mid = ( start_idx + end_idx ) >> 1;
+        comp_result = compare( *inserted_n_kicked, arr[mid] );
+        if ( comp_result == 1 ) start_idx = mid;
+        else if ( comp_result == -1 ) end_idx = mid;
+        else {
+            start_idx = mid;
+            end_idx = mid;
+            break;
+        }
+    }
+
+    swap_temp = *inserted_n_kicked;
+    *inserted_n_kicked = arr[ count - 1 ];
+    for (j = count-1; j > end_idx; j--) arr[ j ] = arr[ j-1 ];
+    arr[ end_idx ] = swap_temp;
 }
