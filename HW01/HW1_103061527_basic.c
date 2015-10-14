@@ -220,7 +220,7 @@ int main( int argc, char* argv[] ) {
     end = clock();
     sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
 
-    printf( "{\n\t\"id\": %d,\n\t\"i/o\": %.3f,\n\t\"comm\": %.3f,\n\t\"sync\": %.3f\n\t\"comp\": %.3f\n}\n", 
+    printf( "{\n\t\"id\": %d,\n\t\"i/o\": %.3f,\n\t\"comm\": %.3f,\n\t\"sync\": %.3f,\n\t\"comp\": %.3f\n}\n", 
         rank, IO_millis, comm_millis, sync_millis, comp_millis );
 
     MPI_Barrier( MPI_COMM_WORLD );

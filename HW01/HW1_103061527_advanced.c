@@ -84,6 +84,7 @@ int main( int argc, char* argv[] ) {
     if ( rank < size ) {
         for (i = 0; i < local_bufsize; i++) local_buf[i] = data_buf[ rank * local_bufsize + i ];
         bubble_sort( local_buf, local_bufsize );
+        // merge_sort( local_buf, local_bufsize ); this option will not show the power of parallel computing
     }
 
     if ( rank != ROOT ) free( data_buf );
@@ -193,7 +194,7 @@ int main( int argc, char* argv[] ) {
     end = clock();
     IO_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
 
-    printf( "{\n\t\"id\": %d,\n\t\"i/o\": %.3f,\n\t\"comm\": %.3f,\n\t\"sync\": %.3f\n\t\"comp\": %.3f\n}\n", 
+    printf( "{\n\t\"id\": %d,\n\t\"i/o\": %.3f,\n\t\"comm\": %.3f,\n\t\"sync\": %.3f,\n\t\"comp\": %.3f\n}\n", 
         rank, IO_millis, comm_millis, sync_millis, comp_millis );
 
     MPI_Barrier( MPI_COMM_WORLD );
