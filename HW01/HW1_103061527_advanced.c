@@ -17,6 +17,7 @@ inline int compare( int a, int b );
 
 inline void _merge_sort_recur( int* arr, int* reg, int start_idx, int end_idx );
 inline void merge_sort( int* arr, int count );
+inline void bubble_sort( int* arr, int count );
 inline void insert_and_kick( int* arr, int count, int* inserted_n_kicked );
 inline void shift_array( int* arr, int count, int dist, int dir );
 
@@ -82,7 +83,7 @@ int main( int argc, char* argv[] ) {
 
     if ( rank < size ) {
         for (i = 0; i < local_bufsize; i++) local_buf[i] = data_buf[ rank * local_bufsize + i ];
-        merge_sort( local_buf, local_bufsize );
+        bubble_sort( local_buf, local_bufsize );
     }
 
     if ( rank != ROOT ) free( data_buf );
@@ -231,6 +232,20 @@ void _merge_sort_recur( int* arr, int* reg, int start_idx, int end_idx ) {
     while ( start2 <= end2 ) reg[ k++ ] = arr[ start2++ ];
 
     for (k = start_idx; k <= end_idx; k++) arr[k] = reg[k];
+}
+
+void bubble_sort( int* arr, int count ) {
+    int i, j;
+    int swap_temp;
+    for (i = 0; i < count-1; i++) {
+        for (j = 0; j < count-1-i; j++) {
+            if ( compare( arr[j], arr[ j+1 ] ) == 1 ) {
+                swap_temp = arr[j];
+                arr[j] = arr[ j+1 ];
+                arr[ j+1 ] = swap_temp;
+            }
+        }
+    }
 }
 
 void merge_sort( int* arr, int count ) {
