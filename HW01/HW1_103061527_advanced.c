@@ -27,7 +27,7 @@ inline void shift_array( int* arr, int count, int dist, int dir );
  *
  */
 int main( int argc, char* argv[] ) {
-    clock_t start, end;
+    double start, end;
     double IO_millis = 0, comm_millis = 0, comp_millis = 0, sync_millis = 0;
     int rank, size;
 
@@ -60,21 +60,21 @@ int main( int argc, char* argv[] ) {
     int* data_buf = malloc( ( size + red_process_num ) * ( data_bufsize / size ) * sizeof( int ) );
     MPI_File f;
 
-    start = clock();
+    start = MPI_Wtime();
     MPI_Barrier( MPI_COMM_WORLD );
-    end = clock();
-    sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+    end = MPI_Wtime();
+    sync_millis += (end - start) * 1000;
 
-    start = clock();
+    start = MPI_Wtime();
     // MPI_File_open (MPI_Comm comm, char *filename, int amode, MPI_Info info, MPI_File *fh)
     MPI_File_open( MPI_COMM_WORLD, in_file, MPI_MODE_RDONLY, MPI_INFO_NULL, &f );
 
     // MPI_File_read (MPI_File fh, void *buf, int count, MPI_Datatype datatype, MPI_Status *status)
     MPI_File_read( f, data_buf, N, MPI_INT, MPI_STATUS_IGNORE );
-    end = clock();
-    IO_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+    end = MPI_Wtime();
+    IO_millis += (end - start) * 1000;
 
-    start = clock();
+    start = MPI_Wtime();
     int i;
     for (i = 0; i < data_bufsize - N; i++) data_buf[ N + i ] = INT_MAX;
 
@@ -88,8 +88,8 @@ int main( int argc, char* argv[] ) {
     }
 
     if ( rank != ROOT ) free( data_buf );
-    end = clock();
-    comp_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+    end = MPI_Wtime();
+    comp_millis += (end - start) * 1000;
 
     int updated = 1;
     int local_updated;
@@ -99,12 +99,12 @@ int main( int argc, char* argv[] ) {
 
         local_updated = 0;
 
-        start = clock();
+        start = MPI_Wtime();
         MPI_Barrier( MPI_COMM_WORLD );
-        end = clock();
-        sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+        end = MPI_Wtime();
+        sync_millis += (end - start) * 1000;
 
-        start = clock();
+        start = MPI_Wtime();
         if ( rank < size ) {
             if ( rank > ROOT ) {
                 send_msg = local_buf[0];
@@ -114,15 +114,15 @@ int main( int argc, char* argv[] ) {
                 MPI_Recv( &recv_msg, 1, MPI_INT, rank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
             }
         }
-        end = clock();
-        comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+        end = MPI_Wtime();
+        comm_millis += (end - start) * 1000;
 
-        start = clock();
+        start = MPI_Wtime();
         MPI_Barrier( MPI_COMM_WORLD );
-        end = clock();
-        sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+        end = MPI_Wtime();
+        sync_millis += (end - start) * 1000;
 
-        start = clock();
+        start = MPI_Wtime();
         if ( rank < size && rank < size-1 ) {
             send_msg = recv_msg;
             if ( compare( recv_msg, local_buf[ local_bufsize-1 ] ) < 1 ) {
@@ -131,23 +131,23 @@ int main( int argc, char* argv[] ) {
                 local_buf[ local_bufsize-1 ] = recv_msg;
             }
         }
-        end = clock();
-        comp_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+        end = MPI_Wtime();
+        comp_millis += (end - start) * 1000;
 
-        start = clock();
+        start = MPI_Wtime();
         MPI_Barrier( MPI_COMM_WORLD );
-        end = clock();
-        sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+        end = MPI_Wtime();
+        sync_millis += (end - start) * 1000;
 
-        start = clock();
+        start = MPI_Wtime();
         if ( rank < size ) {
             if ( rank < size-1 ) MPI_Send( &send_msg, 1, MPI_INT, rank+1, 0, MPI_COMM_WORLD );
             if ( rank > ROOT ) MPI_Recv( &recv_msg, 1, MPI_INT, rank-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
         }
-        end = clock();
-        comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+        end = MPI_Wtime();
+        comm_millis += (end - start) * 1000;
 
-        start = clock();
+        start = MPI_Wtime();
         if ( rank < size && rank > ROOT ) {
             shift_array( local_buf, local_bufsize, 1, DIR_LEFT );
             local_buf[ local_bufsize-1 ] = recv_msg;
@@ -161,38 +161,38 @@ int main( int argc, char* argv[] ) {
             insert_and_kick( local_buf, local_bufsize, &send_msg );
             insert_and_kick( local_buf, local_bufsize, &recv_msg );
         }
-        end = clock();
-        comp_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;;
+        end = MPI_Wtime();
+        comp_millis += (end - start) * 1000;;
 
-        start = clock();
+        start = MPI_Wtime();
         MPI_Barrier( MPI_COMM_WORLD );
-        end = clock();
-        sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+        end = MPI_Wtime();
+        sync_millis += (end - start) * 1000;
 
-        start = clock();
+        start = MPI_Wtime();
         MPI_Allreduce( &local_updated, &updated, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
-        end = clock();
-        comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+        end = MPI_Wtime();
+        comm_millis += (end - start) * 1000;
     }
 
-    start = clock();
+    start = MPI_Wtime();
     MPI_Barrier( MPI_COMM_WORLD );
-    end = clock();
-    sync_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+    end = MPI_Wtime();
+    sync_millis += (end - start) * 1000;
 
-    start = clock();
+    start = MPI_Wtime();
     // MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
     MPI_Gather( local_buf, local_bufsize, MPI_INT, data_buf, local_bufsize, MPI_INT, ROOT, MPI_COMM_WORLD );
-    end = clock();
-    comm_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+    end = MPI_Wtime();
+    comm_millis += (end - start) * 1000;
 
-    start = clock();
+    start = MPI_Wtime();
     if ( rank == ROOT ) {
         FILE* f = fopen( out_file, "wb" );
         fwrite( data_buf, sizeof( int ), N, f );
     }
-    end = clock();
-    IO_millis += ((double) (end - start)) * 1000 / CLOCKS_PER_SEC;
+    end = MPI_Wtime();
+    IO_millis += (end - start) * 1000;
 
     printf( "{\n\t\"id\": %d,\n\t\"i/o\": %.3f,\n\t\"comm\": %.3f,\n\t\"sync\": %.3f,\n\t\"comp\": %.3f\n}\n", 
         rank, IO_millis, comm_millis, sync_millis, comp_millis );
