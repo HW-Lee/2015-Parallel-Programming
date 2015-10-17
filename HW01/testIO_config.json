@@ -1,0 +1,49 @@
+{
+	"queue_mode": "batch",
+	"job_name": "HW1_IO_test",
+	"rerunnable": "n",
+	"exec_cmd": "./HW1_testIO 84000000 ../../shared/IN_84000000",
+	"outpath_prefix": "job",
+	"res_configs": [
+		{
+			"nodes_num": 1,
+			"ppn": 1,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 2,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 3,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 4,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 5,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 6,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 7,
+			"wt": "00:01:00"
+		},
+		{
+			"nodes_num": 1,
+			"ppn": 8,
+			"wt": "00:01:00"
+		}
+	]
+}
