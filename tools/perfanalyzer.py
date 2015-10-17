@@ -52,7 +52,7 @@ def load_json( dummy_file ):
 	return json.load( file( dummy_file[0] ) )
 
 def get_exec_time( perf_list ):
-	return map( lambda dummy: map( lambda perf: perf.exec_time, dummy ), perf_list )
+	return map( lambda dummy: ( map( lambda perf: perf.exec_time, dummy ), map( lambda x: x.res_info, dummy ) ), perf_list )
 
 def get_exec_info( perf_list ):
 	return map( _dummy_get_exec_info, perf_list )
