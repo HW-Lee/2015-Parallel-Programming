@@ -1,5 +1,6 @@
 import sys
 import os
+import glob
 import numpy as np
 import matplotlib.pyplot as pyplot
 
@@ -16,17 +17,28 @@ def main():
 	exec_time_info_advanced_bubble = pf.get_exec_info( perf_list_advanced_bubble )
 	exec_time_info_advanced_merge = pf.get_exec_info( perf_list_advanced_merge )
 
+	print( "[basic]Generating execution time figures..." )
+	sys.stdout.flush()
 	gen_exec_time_figures( exec_time_info_basic[0], "run_report/basic/single" )
 	gen_exec_time_figures( exec_time_info_basic[1], "run_report/basic/multiple" )
 
+	print( "[advanced-bubble]Generating execution time figures..." )
+	sys.stdout.flush()
 	gen_exec_time_figures( exec_time_info_advanced_bubble[0], "run_report/advanced/bubble/single" )
 	gen_exec_time_figures( exec_time_info_advanced_bubble[1], "run_report/advanced/bubble/multiple" )
 
+	print( "[advanced-merge]Generating execution time figures..." )
+	sys.stdout.flush()
 	gen_exec_time_figures( exec_time_info_advanced_merge[0], "run_report/advanced/merge/single" )
 	gen_exec_time_figures( exec_time_info_advanced_merge[1], "run_report/advanced/merge/multiple" )
 
+	print( "Generating speedup figures..." )
+	sys.stdout.flush()
 	exec_time_single_list = map( lambda x: pf.get_exec_time(x)[0], [ perf_list_basic, perf_list_advanced_merge, perf_list_advanced_bubble ] )
 	gen_speedup_figures( exec_time_single_list )
+
+	print( "Generating i/o time figures..." )
+	gen_io_figures()
 
 	exit(0)
 
@@ -83,5 +95,37 @@ def _dummy_add_speedup_plot( time_n_res, prop , label, linestyle ):
 
 	return max( tasks_list )
 
+def gen_io_figures():
+	file_list = glob.glob( "run_report/io/*.json" )
+	res_info_list = map( lambda x: pf.get_res_info(x)[1], file_list )
+
+	file_list = zip( file_list, res_info_list )
+
+	json_arr_list = map( pf.load_json, file_list )
+	io_list = sorted( zip( map( _dummy_analyze_io, json_arr_list ), res_info_list ), key=lambda x: x[1] )
+
+	seq_io = map( lambda x: x[0]["seq_io"], io_list )
+	mpi_io = map( lambda x: x[0]["mpi_io"], io_list )
+
+	X = np.arange( 1, len(res_info_list)+1 )
+
+	pyplot.plot( X, seq_io, "rs-", label="Seq_IO" )
+	pyplot.plot( X, mpi_io, "bs-", label="MPI_IO" )
+
+	pyplot.ylim( 0, max( seq_io ) * 1.3 )
+
+	pyplot.title( "N = 84000000" )
+	pyplot.xlabel( "# of processors" )
+	pyplot.ylabel( "ms" )
+	pyplot.legend()
+
+	pyplot.gcf().set_size_inches( 12, 9 )
+	pyplot.savefig( "run_report/io_diff.png", transparent=True, pad_inches=0 )
+	pyplot.gcf().clear()
+
+def _dummy_analyze_io( json_handle_arr ):
+	seq_io = max( map( lambda x: x["seq_io"], json_handle_arr ) )
+	mpi_io = max( map( lambda x: x["mpi_io"], json_handle_arr ) )
+	return dict( zip( ["seq_io", "mpi_io"], [seq_io, mpi_io] ) )
 
 if __name__ == "__main__": main()
