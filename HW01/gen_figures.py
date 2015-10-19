@@ -17,27 +17,26 @@ def main():
 	exec_time_info_advanced_bubble = pf.get_exec_info( perf_list_advanced_bubble )
 	exec_time_info_advanced_merge = pf.get_exec_info( perf_list_advanced_merge )
 
-	print( "[basic]Generating execution time figures..." )
-	sys.stdout.flush()
+	print( "[basic] Generating execution time figures..." )
 	gen_exec_time_figures( exec_time_info_basic[0], "run_report/basic/single" )
 	gen_exec_time_figures( exec_time_info_basic[1], "run_report/basic/multiple" )
 
-	print( "[advanced-bubble]Generating execution time figures..." )
-	sys.stdout.flush()
+	print( "[advanced-bubble] Generating execution time figures..." )
 	gen_exec_time_figures( exec_time_info_advanced_bubble[0], "run_report/advanced/bubble/single" )
 	gen_exec_time_figures( exec_time_info_advanced_bubble[1], "run_report/advanced/bubble/multiple" )
 
-	print( "[advanced-merge]Generating execution time figures..." )
-	sys.stdout.flush()
+	print( "[advanced-merge] Generating execution time figures..." )
 	gen_exec_time_figures( exec_time_info_advanced_merge[0], "run_report/advanced/merge/single" )
 	gen_exec_time_figures( exec_time_info_advanced_merge[1], "run_report/advanced/merge/multiple" )
 
-	print( "Generating speedup figures..." )
-	sys.stdout.flush()
+	print( "[overall] Generating executive consumption figures..." )
+	gen_speed_comparison_figure( perf_list_basic[0], perf_list_advanced_bubble[0], perf_list_advanced_merge[0] )
+
+	print( "[overall] Generating speedup figures..." )
 	exec_time_single_list = map( lambda x: pf.get_exec_time(x)[0], [ perf_list_basic, perf_list_advanced_merge, perf_list_advanced_bubble ] )
 	gen_speedup_figures( exec_time_single_list )
 
-	print( "Generating i/o time figures..." )
+	print( "[i/o] Generating i/o time figures..." )
 	gen_io_figures()
 
 	exit(0)
@@ -127,5 +126,26 @@ def _dummy_analyze_io( json_handle_arr ):
 	seq_io = max( map( lambda x: x["seq_io"], json_handle_arr ) )
 	mpi_io = max( map( lambda x: x["mpi_io"], json_handle_arr ) )
 	return dict( zip( ["seq_io", "mpi_io"], [seq_io, mpi_io] ) )
+
+def gen_speed_comparison_figure( perf_list_basic, perf_list_bubble, perf_list_merge ):
+	basic_exec = map( lambda x: x.exec_time, perf_list_basic )
+	bubble_exec = map( lambda x: x.exec_time, perf_list_bubble )
+	merge_exec = map( lambda x: x.exec_time, perf_list_merge )
+
+	basic_tasks = map( lambda x: reduce( lambda x, y: x*y, x.res_info ), perf_list_basic )
+	bubble_tasks = map( lambda x: reduce( lambda x, y: x*y, x.res_info), perf_list_bubble )
+	merge_tasks = map( lambda x: reduce( lambda x, y: x*y, x.res_info), perf_list_merge )
+
+	pyplot.plot( basic_tasks, basic_exec, "gs-", label="basic" )
+	pyplot.plot( merge_tasks, merge_exec, "bs-", label="advanced-merge" )
+	pyplot.plot( bubble_tasks, bubble_exec, "rs-", label="advanced-bubble" )
+
+	pyplot.xlabel( "# of processors" )
+	pyplot.ylabel( "ms" )
+	pyplot.legend()
+
+	pyplot.gcf().set_size_inches( 12, 9 )
+	pyplot.savefig( "run_report/overall_exec.png", transparent=True, pad_inches=0 )
+	pyplot.gcf().clear()
 
 if __name__ == "__main__": main()
