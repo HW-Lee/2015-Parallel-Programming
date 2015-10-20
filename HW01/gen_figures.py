@@ -58,13 +58,13 @@ def gen_exec_time_figures( hash_n_res, name ):
 	pyplot.ylim( 0, max( max( acc_bottom ), max( acc_bottom[-1:] )*1.3 ) )
 
 	pyplot.xticks( X, map( lambda x: x[0]*x[1], res ) )
-	pyplot.xlabel( "# of processors" )
+	pyplot.xlabel( "# of processors with " + name.split("/")[-1] + "-node" )
 	pyplot.ylabel( "ms" )
 	pyplot.legend()
 
 	pyplot.gcf().set_size_inches( 12, 9 )
 
-	pyplot.savefig( name + "-exec.png", transparent=True, pad_inches=0 )
+	pyplot.savefig( name + "-exec.png", transparent=True, bbox_inches='tight', pad_inches=0.1 )
 	pyplot.gcf().clear()
 
 def gen_speedup_figures( time_n_res_list ):
@@ -83,7 +83,7 @@ def gen_speedup_figures( time_n_res_list ):
 	pyplot.legend()
 
 	pyplot.gcf().set_size_inches( 12, 9 )
-	pyplot.savefig( "run_report/speedup.png", transparent=True, pad_inches=0 )
+	pyplot.savefig( "run_report/speedup.png", transparent=True, bbox_inches='tight', pad_inches=0.1 )
 	pyplot.gcf().clear()
 
 def _dummy_add_speedup_plot( time_n_res, prop , label, linestyle ):
@@ -119,7 +119,7 @@ def gen_io_figures():
 	pyplot.legend()
 
 	pyplot.gcf().set_size_inches( 12, 9 )
-	pyplot.savefig( "run_report/io_diff.png", transparent=True, pad_inches=0 )
+	pyplot.savefig( "run_report/io_diff.png", transparent=True, bbox_inches='tight', pad_inches=0.1 )
 	pyplot.gcf().clear()
 
 def _dummy_analyze_io( json_handle_arr ):
@@ -145,7 +145,7 @@ def gen_speed_comparison_figure( perf_list_basic, perf_list_bubble, perf_list_me
 	pyplot.legend()
 
 	pyplot.gcf().set_size_inches( 12, 9 )
-	pyplot.savefig( "run_report/overall_exec.png", transparent=True, pad_inches=0 )
+	pyplot.savefig( "run_report/overall_exec.png", transparent=True, bbox_inches='tight', pad_inches=0.1 )
 	pyplot.gcf().clear()
 
 if __name__ == "__main__": main()
