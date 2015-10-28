@@ -10,19 +10,15 @@ using namespace std;
 pthread_mutex_t mtx;
 RollerCoaster* rolcoaster;
 
-void* simulate( void* ptr );
+void* passenger_thread( void* ptr );
 
 int main( int argc, char* argv[] ) {
 
 	// hw2_SRCC n C T N
-	// int n = atoi( argv[0] );
-	// int C = atoi( argv[1] );
-	// int T = atoi( argv[2] );
-	// int N = atoi( argv[3] );
-	int n = 5;
-	int C = 3;
-	int T = 1000;
-	int N = 10;
+	int n = atoi( argv[1] );
+	int C = atoi( argv[2] );
+	int T = atoi( argv[3] );
+	int N = atoi( argv[4] );
 
 	// Initialization
 	pthread_t* threads = new pthread_t[n];
@@ -38,7 +34,7 @@ int main( int argc, char* argv[] ) {
 		passengers[i] = new Passenger( i+1 );
 
 	for (int i = 0; i < n; i++)
-		pthread_create( &threads[i], NULL, simulate, (void *) passengers[i] );
+		pthread_create( &threads[i], NULL, passenger_thread, (void *) passengers[i] );
 
 	for (int i = 0; i < n; i++)
 		pthread_join( threads[i], NULL );
@@ -47,21 +43,27 @@ int main( int argc, char* argv[] ) {
 	return 0;
 }
 
-void* simulate( void* ptr ) {
+void* passenger_thread( void* ptr ) {
+	int resp;
 	Passenger* passenger = (Passenger*) ptr;
 
-	while ( rolcoaster->is_available() ) {
+	do {
 		pthread_mutex_lock( &mtx );
 
-		rolcoaster->get_in( passenger );
-		printf( "Passenger%d is waiting.\n", passenger->getId() );
-		if ( rolcoaster->is_available() )
+		resp = rolcoaster->get_in( passenger );
+		if ( resp == 1 ) {
+			// printf( "Passenger%d is waiting.\n", passenger->getId() );
 			pthread_cond_wait( passenger->getNotifier(), &mtx );
-		printf( "Passenger%d walks around.\n", passenger->getId() );
-		usleep( 1000 * 1000 );
+		}
 
 		pthread_mutex_unlock( &mtx );
-	}
+
+		if ( rolcoaster->is_available() ) {
+			printf( "Passenger%d wanders around the park.\n", passenger->getId() );
+			usleep( 1000 * 1000 );
+			printf( "Passenger%d returns for another ride.\n", passenger->getId() );
+		}
+	} while ( rolcoaster->is_available() );
 
 	return 0;
 }

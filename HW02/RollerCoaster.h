@@ -14,7 +14,8 @@ class RollerCoaster {
 public:
 	RollerCoaster( int cap, pthread_mutex_t* mtx_ref );
 	~RollerCoaster();
-	void get_in( Passenger* passenger );
+	pthread_cond_t* getNotifier();
+	int get_in( Passenger* passenger );
 	void set_tracktime_millis( int tracktime_millis );
 	void set_run_times( int N );
 	bool is_full();
@@ -25,6 +26,7 @@ public:
 	static long get_current_time_millis();
 
 private:
+	pthread_cond_t* notifier;
 	pthread_mutex_t* mtx_ref;
 	long init_time;
 	int cap;
@@ -40,21 +42,29 @@ RollerCoaster::RollerCoaster( int cap, pthread_mutex_t* mtx_ref ) {
 	this->cap = cap;
 	this->cur_cap = 0;
 	this->init_time = RollerCoaster::get_current_time_millis();
+	this->notifier = new pthread_cond_t[1];
+	pthread_cond_init( this->notifier, NULL );
 }
 
-void RollerCoaster::get_in( Passenger* passenger ) {
-	// pthread_mutex_lock( this->mtx_ref );
+pthread_cond_t* RollerCoaster::getNotifier() {
+	return this->notifier;
+}
 
+int RollerCoaster::get_in( Passenger* passenger ) {
+	int resp = 0;
 	if ( this->is_available() ) {
-		if ( this->is_full() ) this->go_track();
-		
+		resp = 1;
 		this->passengers.push_back( passenger );
 		this->cur_cap++;
 
-		cout << "Passenger" << passenger->getId() << " gets in!" << endl;
+		printf( "Passenger%d gets in!\n", passenger->getId() );
+		if ( this->is_full() ) {
+			printf( "The car is full.\n" );
+			resp = 0;
+			this->go_track();
+		}
 	}
-
-	// pthread_mutex_unlock( this->mtx_ref );
+	return resp;
 }
 
 void RollerCoaster::set_tracktime_millis( int tracktime_millis ) {
@@ -75,15 +85,14 @@ bool RollerCoaster::is_available() {
 
 void RollerCoaster::go_track() {
 	cout << "car departures at " << RollerCoaster::get_current_time_millis() - this->init_time << " millisec. ";
+	cout << "Passengers";
 	for (int i = 0; i < this->passengers.size()-1; i++)
 		cout << passengers[i]->getId() << ", ";
-	cout << "and " << passengers[this->cap-1]->getId() << " passengers are in the car." << endl;
+	cout << "and " << passengers[this->cap-1]->getId() << " are in the car." << endl;
 
 	usleep( this->tracktime_millis * 1000 );
 
 	cout << "car arrives at " << RollerCoaster::get_current_time_millis() - this->init_time << " millisec. ";
-
-	for (int i = 0; i < this->passengers.size(); i++) pthread_cond_signal( this->passengers[i]->getNotifier() );
 
 	for (int i = 0; i < this->passengers.size()-1; i++)
 		cout << passengers[i]->getId() << ", ";
@@ -91,6 +100,8 @@ void RollerCoaster::go_track() {
 
 	this->N--;
 	this->cur_cap = 0;
+
+	for (int i = 0; i < this->passengers.size(); i++) pthread_cond_signal( this->passengers[i]->getNotifier() );
 	this->passengers.clear();
 }
 
