@@ -47,6 +47,8 @@ void* passenger_thread( void* ptr ) {
 	int resp;
 	Passenger* passenger = (Passenger*) ptr;
 
+	srand( time(NULL) );
+
 	do {
 		pthread_mutex_lock( &mtx );
 
@@ -59,8 +61,9 @@ void* passenger_thread( void* ptr ) {
 		pthread_mutex_unlock( &mtx );
 
 		if ( rolcoaster->is_available() ) {
+			int wander_t = rand() % 5000 + 1;
 			printf( "Passenger%d wanders around the park.\n", passenger->getId() );
-			usleep( 1000 * 1000 );
+			usleep( wander_t * 1000 );
 			printf( "Passenger%d returns for another ride.\n", passenger->getId() );
 		}
 	} while ( rolcoaster->is_available() );
