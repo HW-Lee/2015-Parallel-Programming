@@ -37,6 +37,7 @@ def main(argv):
     rerunnable = config[ "rerunnable" ]
     exec_cmd = config[ "exec_cmd" ]
     outpath_prefix = config[ "outpath_prefix" ]
+    x11_forwarding = config.get( "x11_forwarding", False )
 
     res_configs = config[ "res_configs" ]
     n = len( res_configs )
