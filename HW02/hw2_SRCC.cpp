@@ -56,6 +56,7 @@ void* passenger_thread( void* ptr ) {
 		if ( resp == 1 ) {
 			// printf( "Passenger%d is waiting.\n", passenger->getId() );
 			pthread_cond_wait( passenger->getNotifier(), &mtx );
+			// printf( "Passenger%d is awake!\n", passenger->getId() );
 		}
 
 		pthread_mutex_unlock( &mtx );
@@ -64,7 +65,8 @@ void* passenger_thread( void* ptr ) {
 			int wander_t = rand() % 5000 + 1;
 			printf( "Passenger%d wanders around the park.\n", passenger->getId() );
 			usleep( wander_t * 1000 );
-			printf( "Passenger%d returns for another ride.\n", passenger->getId() );
+			if ( rolcoaster->is_available() )
+				printf( "Passenger%d returns for another ride.\n", passenger->getId() );
 		}
 	} while ( rolcoaster->is_available() );
 

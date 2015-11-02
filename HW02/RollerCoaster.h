@@ -101,7 +101,10 @@ void RollerCoaster::go_track() {
 	this->N--;
 	this->cur_cap = 0;
 
-	for (int i = 0; i < this->passengers.size(); i++) pthread_cond_signal( this->passengers[i]->getNotifier() );
+	for (int i = 0; i < this->passengers.size()-1; i++) { 
+		pthread_cond_signal( this->passengers[i]->getNotifier() );
+		// cout << "Wake up! Passenger" << this->passengers[i]->getId() << endl;
+	}
 	this->passengers.clear();
 }
 
