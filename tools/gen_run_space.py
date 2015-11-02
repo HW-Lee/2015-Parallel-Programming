@@ -42,11 +42,11 @@ def main(argv):
     res_configs = config[ "res_configs" ]
     n = len( res_configs )
     outpaths = map( lambda x: "/".join( [ out_dir, outpath_prefix + str(x) + ".sh" ] ), np.arange( 0, n ) + 1 )
-    map( _dummy_gen_job_script, [queue_mode] * n, [job_name] * n, [rerunnable] * n, [exec_cmd] * n, outpaths, res_configs )
+    map( _dummy_gen_job_script, [queue_mode] * n, [job_name] * n, [rerunnable] * n, [exec_cmd] * n, outpaths, x11_forwarding, res_configs )
 
     exit(0)
 
-def _dummy_gen_job_script( queue_mode, job_name, rerunnable, exec_cmd, outpath, res_config ):
+def _dummy_gen_job_script( queue_mode, job_name, rerunnable, exec_cmd, outpath, x11_forwarding, res_config ):
     nodes_num = str( res_config[ "nodes_num" ] )
     ppn = str( res_config[ "ppn" ] )
     wt = str( res_config[ "wt" ] )
