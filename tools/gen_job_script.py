@@ -43,7 +43,7 @@ def main(argv):
 
 
 
-def gen_job_script(queue_mode="debug", job_name="MY_JOB", rerunnable="n", nodes_num="1", ppn_num="4", wt="00:01:00", exec_cmd=None, outpath="job.sh"):
+def gen_job_script(queue_mode="debug", job_name="MY_JOB", rerunnable="n", nodes_num="1", ppn_num="4", wt="00:01:00", exec_cmd=None, outpath="job.sh", x11_forwarding=False):
 
     OPT_PREFIX = "#PBS"
 
@@ -54,6 +54,8 @@ def gen_job_script(queue_mode="debug", job_name="MY_JOB", rerunnable="n", nodes_
         "-l " + "nodes=" + nodes_num + ":ppn=" + ppn_num,
         "-l " + "walltime=" + wt,
     ]
+
+    if x11_forwarding: info << "-l -X -I"
 
     info = map( lambda x: OPT_PREFIX + " " + x, info )
     info.append( "cd $PBS_O_WORKDIR" )
