@@ -1,6 +1,9 @@
 #include <iostream>
 #include <math.h>
 
+#ifndef VEC
+#define VEC
+
 #define Vec2(DT) Vec<DT, 2>
 #define Vec3(DT) Vec<DT, 3>
 
@@ -41,7 +44,7 @@ template< class DataType, unsigned int N >
 template< class T >
 T Vec<DataType, N>::norm() {
 	T norm = 0;
-	for (int i = 0; i < N; i++) norm += (T) (this->data[i] * this->data[i]);
+	for (int i = 0; i < N; i++) norm += (T) pow( (double)this->data[i], 2);
 	return sqrt( norm );
 }
 
@@ -124,3 +127,5 @@ Vec<DataType, N> Vec<DataType, N>::operator/( const DataType& scale ) {
 	for (int i = 0; i < N; i++) _vec.data[i] = this->data[i] / scale;
 	return _vec;
 }
+
+#endif
