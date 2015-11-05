@@ -197,8 +197,8 @@ void* move_bodies( void* ptr ) {
 				else if ( i < j ) F += pair[i][j-i-1].force_1to2();
 			}
 			// printf( "Body%d is pushed with force (%e, %e)\n", i, F[0], F[1] );
-			bodySet[i].velocity += F / bodySet[i].mass * del_t;
-			bodySet[i].position += bodySet[i].velocity * del_t;
+			bodySet[i].velocity += F / bodySet[i].mass * del_t / num_threads;
+			bodySet[i].position += bodySet[i].velocity * del_t / num_threads;
 		}
 	}
 

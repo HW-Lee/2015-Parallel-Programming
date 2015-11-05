@@ -23,6 +23,9 @@ private:
 	Body body2;
 	double F;
 
+	Vec2(double) f_1to2;
+	Vec2(double) f_2to1;
+
 };
 
 // const double GravForce::G = 6.67408e-3;
@@ -32,18 +35,20 @@ GravForce::GravForce( Body body1, Body body2 ) {
 	this->body1 = body1;
 	this->body2 = body2;
 	this->F = ( G * body1.mass * body2.mass ) / pow( (body1.position - body2.position).norm<double>(), 2 );
+	Vec2(double) direction = (body2.position - body1.position);
+	this->f_1to2 = direction * this->F / direction.norm<double>();
+	direction = (body1.position - body2.position);
+	this->f_2to1 = direction * this->F / direction.norm<double>();
 }
 
 double GravForce::magnitude() { return this->F; }
 
 Vec2(double) GravForce::force_1to2() {
-	Vec2(double) direction = (body2.position - body1.position);
-	return direction * this->F / direction.norm<double>();
+	return this->f_1to2;
 }
 
 Vec2(double) GravForce::force_2to1() {
-	Vec2(double) direction = (body1.position - body2.position);
-	return direction * this->F / direction.norm<double>();
+	return this->f_2to1;
 }
 
 #endif
