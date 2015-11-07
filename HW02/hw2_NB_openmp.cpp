@@ -10,7 +10,6 @@
 #include "Body.h"
 #include "GravForce.h"
 #include "DispManager.h"
-#include "ComputeParams.h"
 
 using namespace std;
 
@@ -31,18 +30,12 @@ int main( int argc, char* argv[] ) {
 	float  l_coor;
 	int    l_xwin;
 
-	// printf( "./hw2_NB_openmp %d %lf %d %lf %s %f %s", num_threads, m, T, t, in_file, theta, xwin_en );
-
-	if ( strcmp( xwin_en, "enable" ) == 0 ) { // Needs to be modified to c version string comparison
+	if ( strcmp( xwin_en, "enable" ) == 0 ) {
 		   x_min 	   = atof( argv[8] );
 		   y_min 	   = atof( argv[9] );
 		   l_coor 	   = atof( argv[10] );
 		   l_xwin 	   = atoi( argv[11] );
-
-		   // printf( " %f %f %f %d", x_min, y_min, l_coor, l_xwin );
 	}
-
-	// cout << endl;
 
 	int num_bodies;
 
@@ -62,45 +55,36 @@ int main( int argc, char* argv[] ) {
 		bodySet.push_back( b );
 	}
 
-	int num_pair = num_bodies * (num_bodies-1) / 2;
-
-	GravForce** pair = new GravForce*[num_bodies-1];
-	for (int i = 0; i < num_bodies-1; i++) {
-		pair[i] = new GravForce[ num_bodies-1 - i ];
+	GravForce** pair = new GravForce*[num_bodies];
+	for (int i = 0; i < num_bodies; i++) {
+		pair[i] = new GravForce[num_bodies];
 	}
-
-	pthread_t* threads = new pthread_t[num_threads];
 
 	if ( strcmp( xwin_en, "enable" ) == 0 )
 		DispManager::init( x_min, y_min, l_coor, l_xwin );
 
-	ComputeParams* params = new ComputeParams[num_threads];
-	for (int i = 0; i < num_threads; i++) {
-		ComputeParams p( i, num_threads, t, pair );
-		params[i] = p;
-	}
+	int chunksize = (num_bodies > num_threads) ? num_bodies/num_threads : 1;
 
 	for (int iter = 0; iter < T; iter++) {
-		#pragma opm parallel num_thread(num_threads) private(i, j, num_bodies, del_t)
+		#pragma omp parallel num_threads(num_threads) firstprivate(num_bodies, t)
 		{
-			int num_bodies = bodySet.size();
-			#pragma omp for schedule(dynamic, 1) nowait
-				for (int i = 0; i < num_bodies-1; i++) {
-					for (int j = 0; j < num_bodies-1-i; j++) {
-						// printf( "thread%d process (%d, %d)\n", omp_get_thread_num(), i, i+j+1 );
-						GravForce force( bodySet[i], bodySet[i+j+1] );
-						pair[i][j] = force;
+			#pragma omp for
+				for (int i = 0; i < num_bodies; i++) {
+					for (int j = 0; j < num_bodies; j++) {
+						if ( i != j ) {
+							GravForce force( bodySet[i], bodySet[j] );
+							pair[i][j] = force;
+						}
 					}
 				}
 
 			Vec2(double) F;
 			double del_t = t;
-			#pragma omp for schedule(dynamic, 1) nowait
+			#pragma omp for
 				for (int i = 0; i < num_bodies; i++) {
 					F *= 0;
 					for (int j = 0; j < num_bodies; j++) {
-						if ( i > j ) F += pair[j][i-j-1].force_2to1();
-						else if ( i < j ) F += pair[i][j-i-1].force_1to2();
+						if ( i != j ) F += pair[i][j].vector();
 					}
 
 					bodySet[i].velocity += F / bodySet[i].mass * del_t;
@@ -114,14 +98,6 @@ int main( int argc, char* argv[] ) {
 
 			for (int i = 0; i < num_bodies; i++)
 				DispManager::draw( bodySet[i].position );
-
-			// #pragma omp parallel num_threads(num_threads) shared(bodySet) private(i, num_bodies)
-			// {
-			// 	int num_bodies = bodySet.size();
-			// 	#pragma omp for schedule(dynamic, 1)
-			// 		for (int i = 0; i < num_bodies; i++)
-			// 			DispManager::draw( bodySet[i].position );
-			// }
 
 			DispManager::flush();
 		}

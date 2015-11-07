@@ -33,8 +33,8 @@ ComputeParams::ComputeParams( int thread_id, int num_threads, double del_t, Grav
 
 void ComputeParams::operator=( ComputeParams p ) {
 	this->thread_id = p.getId();
-	this->del_t = p.getThreadCount();
 	this->num_threads = p.getThreadCount();
+	this->del_t = p.getTimeInterval();
 	this->shared_memory = p.getSharedMemory();
 }
 
