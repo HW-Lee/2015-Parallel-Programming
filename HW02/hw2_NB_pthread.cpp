@@ -15,10 +15,9 @@
 
 using namespace std;
 
-void* compute_force( void* ptr );
 void* move_bodies( void* ptr );
 
-vector<Body> bodySet;
+vector<Body>* bodySet;
 
 int main( int argc, char* argv[] ) {
 
@@ -53,19 +52,14 @@ int main( int argc, char* argv[] ) {
 	Vec2(double) pos;
 	Vec2(double) vel;
 
+	bodySet = new vector<Body>[2];
+
 	while( getline( f, line ) ) {
 		istringstream iss(line);
 		iss >> pos[0] >> pos[1] >> vel[0] >> vel[1];
 		Body b( pos, vel, m );
-		bodySet.push_back( b );
-	}
-
-	int num_pair = num_bodies * (num_bodies-1) / 2;
-	int num_chunks = (num_bodies % 2 == 0) ? num_bodies / 2 : (num_bodies+1) / 2;
-
-	GravForce** pair = new GravForce*[num_bodies];
-	for (int i = 0; i < num_bodies; i++) {
-		pair[i] = new GravForce[num_bodies];
+		bodySet[0].push_back( b );
+		bodySet[1].push_back( b );
 	}
 
 	pthread_t* threads = new pthread_t[num_threads];
@@ -76,29 +70,26 @@ int main( int argc, char* argv[] ) {
 	ComputeParams* params = new ComputeParams[num_threads];
 
 	for (int i = 0; i < num_threads; i++) {
-		ComputeParams p( i, num_threads, t, pair );
+		ComputeParams p( i, num_threads, t, 0 );
 		params[i] = p;
 	}
 
 	for (int iter = 0; iter < T; iter++) {
-		for (int i = 0; i < num_threads; i++)
-			pthread_create( &threads[i], NULL, compute_force, (void *) &params[i] );
-
-		for (int i = 0; i < num_threads; i++)
-			pthread_join( threads[i], NULL );
-	
 		for (int i = 0; i < num_threads; i++)
 			pthread_create( &threads[i], NULL, move_bodies, (void *) &params[i] );
 
 		for (int i = 0; i < num_threads; i++)
 			pthread_join( threads[i], NULL );
 
+		for (int i = 0; i < num_bodies; i++)
+			bodySet[0][i] = bodySet[1][i];
+
 		cout << "iteration " << iter << endl;
 		if ( strcmp( xwin_en, "enable" ) == 0 ) {
 			DispManager::clear();
 
-			for (int i = 0; i < bodySet.size(); i++)
-				DispManager::draw( bodySet[i].position );
+			for (int i = 0; i < bodySet[0].size(); i++)
+				DispManager::draw( bodySet[0][i].position );
 			DispManager::flush();
 		}
 	}
@@ -107,46 +98,11 @@ int main( int argc, char* argv[] ) {
 	return 0;
 }
 
-void* compute_force( void* ptr ) {
-	ComputeParams* params = (ComputeParams*) ptr;
-	int id = params->getId();
-	int num_threads = params->getThreadCount();
-	int num_bodies = bodySet.size();
-	GravForce** pair = params->getSharedMemory();
-
-	if (num_threads > num_bodies) num_threads = num_bodies;
-
-	if ( id < num_bodies ) {
-		int body_start_idx;
-		int body_end_idx;
-
-		if ( id < num_bodies % num_threads ) {
-			body_start_idx = id * (num_bodies / num_threads + 1);
-			body_end_idx = (id + 1) * (num_bodies / num_threads + 1);
-		} else {
-			body_start_idx = id * (num_bodies / num_threads) + (num_bodies % num_threads);
-			body_end_idx = (id + 1) * (num_bodies / num_threads) + (num_bodies % num_threads);
-		}
-
-		for (int i = body_start_idx; i < body_end_idx; i++) {
-			for (int j = 0; j < num_bodies; j++) {
-				if ( i != j ) {
-					GravForce force( bodySet[i], bodySet[j] );
-					pair[i][j] = force;
-				}
-			}
-		}
-	}
-
-	return 0;
-}
-
 void* move_bodies( void* ptr ) {
 	ComputeParams* params = (ComputeParams*) ptr;
 	int id = params->getId();
 	int num_threads = params->getThreadCount();
-	int num_bodies = bodySet.size();
-	GravForce** pair = params->getSharedMemory();
+	int num_bodies = bodySet[0].size();
 	double del_t = params->getTimeInterval();
 
 	if ( num_threads > num_bodies ) num_threads = num_bodies;
@@ -167,11 +123,14 @@ void* move_bodies( void* ptr ) {
 		for (int i = body_start_idx; i < body_end_idx; i++) {
 			F *= 0;
 			for (int j = 0; j < num_bodies; j++) {
-				if ( i != j ) F += pair[i][j].vector();
+				if ( i != j ) {
+					GravForce force( bodySet[0][i], bodySet[0][j] );
+					F += force.vector();
+				}
 			}
 
-			bodySet[i].velocity += F / bodySet[i].mass * del_t;
-			bodySet[i].position += bodySet[i].velocity * del_t;
+			bodySet[1][i].velocity = bodySet[0][i].velocity + F / bodySet[0][i].mass * del_t;
+			bodySet[1][i].position = bodySet[0][i].position + bodySet[1][i].velocity * del_t;
 		}
 	}
 
