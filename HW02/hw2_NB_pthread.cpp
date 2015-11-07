@@ -17,7 +17,8 @@ using namespace std;
 
 void* move_bodies( void* ptr );
 
-vector<Body>* bodySet;
+vector<Body> bodySet;
+pthread_barrier_t bar;
 
 int main( int argc, char* argv[] ) {
 
@@ -41,6 +42,8 @@ int main( int argc, char* argv[] ) {
 		   l_xwin 	   = atoi( argv[11] );
 	}
 
+	pthread_barrier_init( &bar, NULL, num_threads );
+
 	int num_bodies;
 
 	ifstream f( in_file );
@@ -52,14 +55,11 @@ int main( int argc, char* argv[] ) {
 	Vec2(double) pos;
 	Vec2(double) vel;
 
-	bodySet = new vector<Body>[2];
-
 	while( getline( f, line ) ) {
 		istringstream iss(line);
 		iss >> pos[0] >> pos[1] >> vel[0] >> vel[1];
 		Body b( pos, vel, m );
-		bodySet[0].push_back( b );
-		bodySet[1].push_back( b );
+		bodySet.push_back( b );
 	}
 
 	pthread_t* threads = new pthread_t[num_threads];
@@ -81,15 +81,12 @@ int main( int argc, char* argv[] ) {
 		for (int i = 0; i < num_threads; i++)
 			pthread_join( threads[i], NULL );
 
-		for (int i = 0; i < num_bodies; i++)
-			bodySet[0][i] = bodySet[1][i];
-
-		cout << "iteration " << iter << endl;
+		// cout << "iteration " << iter << endl;
 		if ( strcmp( xwin_en, "enable" ) == 0 ) {
 			DispManager::clear();
 
-			for (int i = 0; i < bodySet[0].size(); i++)
-				DispManager::draw( bodySet[0][i].position );
+			for (int i = 0; i < bodySet.size(); i++)
+				DispManager::draw( bodySet[i].position );
 			DispManager::flush();
 		}
 	}
@@ -102,7 +99,7 @@ void* move_bodies( void* ptr ) {
 	ComputeParams* params = (ComputeParams*) ptr;
 	int id = params->getId();
 	int num_threads = params->getThreadCount();
-	int num_bodies = bodySet[0].size();
+	int num_bodies = bodySet.size();
 	double del_t = params->getTimeInterval();
 
 	if ( num_threads > num_bodies ) num_threads = num_bodies;
@@ -124,14 +121,18 @@ void* move_bodies( void* ptr ) {
 			F *= 0;
 			for (int j = 0; j < num_bodies; j++) {
 				if ( i != j ) {
-					GravForce force( bodySet[0][i], bodySet[0][j] );
+					GravForce force( bodySet[i], bodySet[j] );
 					F += force.vector();
 				}
 			}
 
-			bodySet[1][i].velocity = bodySet[0][i].velocity + F / bodySet[0][i].mass * del_t;
-			bodySet[1][i].position = bodySet[0][i].position + bodySet[1][i].velocity * del_t;
+			bodySet[i].velocity += F / bodySet[i].mass * del_t;
 		}
+
+		pthread_barrier_wait( &bar );
+
+		for (int i = body_start_idx; i < body_end_idx; i++)
+			bodySet[i].position += bodySet[i].velocity * del_t;
 	}
 
 	return 0;

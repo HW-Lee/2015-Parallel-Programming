@@ -13,7 +13,7 @@
 
 using namespace std;
 
-vector<Body>* bodySet;
+vector<Body> bodySet;
 
 int main( int argc, char* argv[] ) {
 
@@ -48,46 +48,42 @@ int main( int argc, char* argv[] ) {
 	Vec2(double) pos;
 	Vec2(double) vel;
 
-	bodySet = new vector<Body>[2];
-
 	while( getline( f, line ) ) {
 		istringstream iss(line);
 		iss >> pos[0] >> pos[1] >> vel[0] >> vel[1];
 		Body b( pos, vel, m );
-		bodySet[0].push_back( b );
-		bodySet[1].push_back( b );
+		bodySet.push_back( b );
 	}
 
 	if ( strcmp( xwin_en, "enable" ) == 0 )
 		DispManager::init( x_min, y_min, l_coor, l_xwin );
 
-	int switch_idx = 0;
-
 	for (int iter = 0; iter < T; iter++) {
-		#pragma omp parallel num_threads(num_threads) firstprivate(switch_idx, num_bodies, t)
+		#pragma omp parallel num_threads(num_threads) firstprivate(num_bodies, t)
 		{
 			#pragma omp for
 			for (int i = 0; i < num_bodies; i++) {
 				Vec2(double) F;
 				for (int j = 0; j < num_bodies; j++) {
 					if ( i != j ) {
-						GravForce force( bodySet[switch_idx][i], bodySet[switch_idx][j] );
+						GravForce force( bodySet[i], bodySet[j] );
 						F += force.vector();
 					}
 				}
-				bodySet[ (switch_idx + 1) % 2 ][i].velocity = bodySet[switch_idx][i].velocity + F / bodySet[switch_idx][i].mass * t;
-				bodySet[ (switch_idx + 1) % 2 ][i].position = bodySet[switch_idx][i].position + bodySet[ (switch_idx + 1) % 2 ][i].velocity * t;
+				bodySet[i].velocity += F / bodySet[i].mass * t;
 			}
+
+			#pragma omp for
+			for (int i = 0; i < num_bodies; i++)
+				bodySet[i].position += bodySet[i].velocity * t;
 		}
 
-		switch_idx = (switch_idx + 1) % 2;
-
-		cout << "iter = " << iter << endl;
+		// cout << "iter = " << iter << endl;
 		if ( strcmp( xwin_en, "enable" ) == 0 ) {
 			DispManager::clear();
 
 			for (int i = 0; i < num_bodies; i++)
-				DispManager::draw( bodySet[switch_idx][i].position );
+				DispManager::draw( bodySet[i].position );
 
 			DispManager::flush();
 		}
