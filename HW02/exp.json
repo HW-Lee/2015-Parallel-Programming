@@ -1,0 +1,428 @@
+{	
+	"nthreads_var": {
+		"command": "./a.out n 1 500 1 test2.txt 0 disable",
+		"pthread": [
+			{
+				"nthreads": 1,
+				"elapsed": 78764.993408
+			}, {
+				"nthreads": 2,
+				"elapsed": 39699.523438
+			}, {
+				"nthreads": 3,
+				"elapsed": 26631.089355
+			}, {
+				"nthreads": 4,
+				"elapsed": 19979.341797
+			}, {
+				"nthreads": 5,
+				"elapsed": 16014.977783
+			}, {
+				"nthreads": 6,
+				"elapsed": 13727.244873
+			}, {
+				"nthreads": 7,
+				"elapsed": 11580.585693
+			}, {
+				"nthreads": 8,
+				"elapsed": 10218.838135
+			}, {
+				"nthreads": 9,
+				"elapsed": 9089.787598
+			}, {
+				"nthreads": 10,
+				"elapsed": 8644.811035
+			}, {
+				"nthreads": 11,
+				"elapsed": 8470.489990
+			}, {
+				"nthreads": 12,
+				"elapsed": 7569.308350
+			}
+		],
+		"openmp": [
+			{
+				"nthreads": 1,
+				"elapsed": 79750.840088
+			}, {
+				"nthreads": 2,
+				"elapsed": 39929.213379
+			}, {
+				"nthreads": 3,
+				"elapsed": 26696.858887
+			}, {
+				"nthreads": 4,
+				"elapsed": 20079.777588
+			}, {
+				"nthreads": 5,
+				"elapsed": 16098.630127
+			}, {
+				"nthreads": 6,
+				"elapsed": 13454.474609
+			}, {
+				"nthreads": 7,
+				"elapsed": 11533.404541
+			}, {
+				"nthreads": 8,
+				"elapsed": 10123.928223
+			}, {
+				"nthreads": 9,
+				"elapsed": 9160.683105
+			}, {
+				"nthreads": 10,
+				"elapsed": 8142.958984
+			}, {
+				"nthreads": 11,
+				"elapsed": 7414.069336
+			}, {
+				"nthreads": 12,
+				"elapsed": 6882.064209
+			}
+		],
+		"bhalgo": [
+			{
+				"theta": 0.1,
+				"data": [
+					{
+						"nthreads": 1,
+						"elapsed": [602.506104, 64499.546631]
+					}, {
+						"nthreads": 2,
+						"elapsed": [583.334961, 33067.657471]
+					}, {
+						"nthreads": 3,
+						"elapsed": [592.474121, 22416.998535]
+					}, {
+						"nthreads": 4,
+						"elapsed": [550.872070, 17020.178223]
+					}, {
+						"nthreads": 5,
+						"elapsed": [559.499756, 13777.121094]
+					}, {
+						"nthreads": 6,
+						"elapsed": [569.199707, 11625.456543]
+					}, {
+						"nthreads": 7,
+						"elapsed": [574.815430, 10166.592041]
+					}, {
+						"nthreads": 8,
+						"elapsed": [601.551025, 9014.812256]
+					}, {
+						"nthreads": 9,
+						"elapsed": [570.786377, 8063.514893]
+					}, {
+						"nthreads": 10,
+						"elapsed": [585.081787, 7491.144531]
+					}, {
+						"nthreads": 11,
+						"elapsed": [609.578125, 7118.100830]
+					}, {
+						"nthreads": 12,
+						"elapsed": [591.024902, 6604.454590]
+					}
+				]
+			}, {
+				"theta": 1,
+				"data": [
+					{
+						"nthreads": 1,
+						"elapsed": [657.127686, 5186.172363] 
+					}, {
+						"nthreads": 2,
+						"elapsed": [543.712891, 2869.618652] 
+					}, {
+						"nthreads": 3,
+						"elapsed": [547.881348, 1944.750732] 
+					}, {
+						"nthreads": 4,
+						"elapsed": [491.329346, 1500.262451] 
+					}, {
+						"nthreads": 5,
+						"elapsed": [476.836670, 1282.745361] 
+					}, {
+						"nthreads": 6,
+						"elapsed": [498.608398, 1180.642090] 
+					}, {
+						"nthreads": 7,
+						"elapsed": [481.424316, 1031.970947] 
+					}, {
+						"nthreads": 8,
+						"elapsed": [509.896484, 1029.448975] 
+					}, {
+						"nthreads": 9,
+						"elapsed": [521.586182, 1000.527344] 
+					}, {
+						"nthreads": 10,
+						"elapsed": [487.698486, 932.037598] 
+					}, {
+						"nthreads": 11,
+						"elapsed": [494.215088, 957.238770] 
+					}, {
+						"nthreads": 12,
+						"elapsed": [497.065674, 894.437012] 
+					}
+				]
+			}
+		]
+	},
+	"nsteps_var": {
+		"command": "./a.out 10 1 T 1 test2.txt 0 disable",
+		"pthread": [
+			{
+				"nsteps": 100,
+				"elapsed": 1734.054199
+			}, {
+				"nsteps": 200,
+				"elapsed": 3471.441895
+			}, {
+				"nsteps": 300,
+				"elapsed": 5213.514404
+			}, {
+				"nsteps": 400,
+				"elapsed": 6950.268066
+			}, {
+				"nsteps": 500,
+				"elapsed": 8682.134033
+			}, {
+				"nsteps": 600,
+				"elapsed": 10413.516113
+			}, {
+				"nsteps": 700,
+				"elapsed": 12168.208740
+			}, {
+				"nsteps": 800,
+				"elapsed": 13954.863037
+			}, {
+				"nsteps": 900,
+				"elapsed": 15718.068115
+			}
+		], 
+		"openmp": [
+			{
+				"nsteps": 100,
+				"elapsed": 1651.079102
+			}, {
+				"nsteps": 200,
+				"elapsed": 3295.133301
+			}, {
+				"nsteps": 300,
+				"elapsed": 4942.070068
+			}, {
+				"nsteps": 400,
+				"elapsed": 6593.635254
+			}, {
+				"nsteps": 500,
+				"elapsed": 8250.879883
+			}, {
+				"nsteps": 600,
+				"elapsed": 9893.003662
+			}, {
+				"nsteps": 700,
+				"elapsed": 11561.779785
+			}, {
+				"nsteps": 800,
+				"elapsed": 13233.411621
+			}, {
+				"nsteps": 900,
+				"elapsed": 14917.966309
+			}
+		],
+		"bhalgo": [
+			{
+				"theta": 0.1,
+				"data": [
+					{
+						"nsteps": 100,
+						"elapsed": [184.543457, 2384.489990]
+					}, {
+						"nsteps": 200,
+						"elapsed": [324.981934, 3812.781738]
+					}, {
+						"nsteps": 300,
+						"elapsed": [460.322266, 5224.598633]
+					}, {
+						"nsteps": 400,
+						"elapsed": [589.369629, 6335.928711]
+					}, {
+						"nsteps": 500,
+						"elapsed": [737.591064, 7594.201416]
+					}, {
+						"nsteps": 600,
+						"elapsed": [890.370361, 8790.547363]
+					}, {
+						"nsteps": 700,
+						"elapsed": [1060.314941, 9911.661377]
+					}, {
+						"nsteps": 800,
+						"elapsed": [1196.254150, 11627.445557]
+					}, {
+						"nsteps": 900,
+						"elapsed": [1327.185059, 12132.030273]
+					}
+				]
+			}, {
+				"theta": 1,
+				"data": [
+					{
+						"nsteps": 100,
+						"elapsed": [149.229492, 179.535400]
+					}, {
+						"nsteps": 200,
+						"elapsed": [245.486328, 351.011475]
+					}, {
+						"nsteps": 300,
+						"elapsed": [353.475586, 563.662109]
+					}, {
+						"nsteps": 400,
+						"elapsed": [515.552002, 764.396729]
+					}, {
+						"nsteps": 500,
+						"elapsed": [666.545410, 973.399170]
+					}, {
+						"nsteps": 600,
+						"elapsed": [780.656494, 1211.852051]
+					}, {
+						"nsteps": 700,
+						"elapsed": [915.397461, 1411.355225]
+					}, {
+						"nsteps": 800,
+						"elapsed": [1074.996338, 1665.634766]
+					}, {
+						"nsteps": 900,
+						"elapsed": [1270.272217, 2231.250488]
+					}
+				]
+			}
+		]
+	},
+	"nbodies_var": {
+		"command": "./a.out 10 1 1 1 xxx.txt 0 disable",
+		"pthread": [
+			{
+				"nbodies": 5000,
+				"elapsed": 453.300537
+			}, {
+				"nbodies": 10000,
+				"elapsed": 1806.270020
+			}, {
+				"nbodies": 15000,
+				"elapsed": 4064.554443
+			}, {
+				"nbodies": 20000,
+				"elapsed": 7206.624023
+			}, {
+				"nbodies": 25000,
+				"elapsed": 11234.940674
+			}, {
+				"nbodies": 30000,
+				"elapsed": 16182.477539
+			}
+		], 
+		"openmp": [
+			{
+				"nbodies": 5000,
+				"elapsed": 458.676758
+			}, {
+				"nbodies": 10000,
+				"elapsed": 1825.999756
+			}, {
+				"nbodies": 15000,
+				"elapsed": 4363.641602
+			}, {
+				"nbodies": 20000,
+				"elapsed": 7607.183594
+			}, {
+				"nbodies": 25000,
+				"elapsed": 11398.449951
+			}, {
+				"nbodies": 30000,
+				"elapsed": 16372.799316
+			}
+		],
+		"bhalgo": [
+			{
+				"theta": 0.1,
+				"data": [
+					{
+						"nbodies": 5000,
+						"elapsed": [7.086426, 272.870361]
+					}, {
+						"nbodies": 10000,
+						"elapsed": [18.905273, 708.822754]
+					}, {
+						"nbodies": 15000,
+						"elapsed": [24.635986, 2142.848145]
+					}, {
+						"nbodies": 20000,
+						"elapsed": [27.423096, 1673.951172]
+					}, {
+						"nbodies": 25000,
+						"elapsed": [29.627441, 2071.526855]
+					}, {
+						"nbodies": 30000,
+						"elapsed": [37.148682, 2650.367188]
+					}
+				]
+			}, {
+				"theta": 1,
+				"data": [
+					{
+						"nbodies": 5000,
+						"elapsed": [7.162842, 9.963867]
+					}, {
+						"nbodies": 10000,
+						"elapsed": [23.072998, 20.156738]
+					}, {
+						"nbodies": 15000,
+						"elapsed": [24.528809, 41.482910]
+					}, {
+						"nbodies": 20000,
+						"elapsed": [33.324951, 38.549072]
+					}, {
+						"nbodies": 25000,
+						"elapsed": [25.087646, 47.291260]
+					}, {
+						"nbodies": 30000,
+						"elapsed": [37.475830, 55.756348]
+					}
+				]
+			}
+		]
+	},
+	"theta_var": {
+		"command": "./a.out 10 1 100 1 test3.txt theta disable",
+		"data": [
+			{
+				"theta": 0.1,
+				"elapsed": [475.324219, 28290.006104]
+			}, {
+				"theta": 0.2,
+				"elapsed": [431.214355, 9961.046875]
+			}, {
+				"theta": 0.3,
+				"elapsed": [398.556641, 5157.676025]
+			}, {
+				"theta": 0.4,
+				"elapsed": [404.342285, 3312.610840]
+			}, {
+				"theta": 0.5,
+				"elapsed": [384.472412, 2272.335449]
+			}, {
+				"theta": 0.6,
+				"elapsed": [375.537354, 1678.468750]
+			}, {
+				"theta": 0.7,
+				"elapsed": [378.229736, 1338.004150]
+			}, {
+				"theta": 0.8,
+				"elapsed": [395.270264, 1086.365967]
+			}, {
+				"theta": 0.9,
+				"elapsed": [384.134033, 919.212158]
+			}, {
+				"theta": 1,
+				"elapsed": [376.322266, 755.127441]
+			}
+		]
+	}
+}
