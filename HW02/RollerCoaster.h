@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <sys/time.h>
+#include <unistd.h>
 #include <pthread.h>
 
 #include "Passenger.h"
@@ -90,7 +91,7 @@ void RollerCoaster::go_track() {
 		cout << passengers[i]->getId() << ", ";
 	cout << "and " << passengers[this->cap-1]->getId() << " are in the car." << endl;
 
-	usleep( this->tracktime_millis * 1000 );
+	usleep( this->tracktime_millis * 1e3 );
 
 	cout << "car arrives at " << RollerCoaster::get_current_time_millis() - this->init_time << " millisec. ";
 
