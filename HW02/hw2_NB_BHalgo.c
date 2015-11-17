@@ -49,6 +49,8 @@ bool* checklist;
 BHTree* root;
 pthread_barrier_t bar;
 
+struct timespec ref_time;
+
 /**
  *
  *	Display Manager
@@ -86,6 +88,14 @@ Vec2 Force_getForce( int idx1, BHTree* node, double theta, double d );
  void* Tree_build_layer( void* ptr );
  void* Tree_build( void* ptr );
  void Tree_free( BHTree* node );
+
+/**
+ *
+ * Time
+ *
+ */
+void tic();
+double toc();
 
 
 typedef struct {
@@ -156,7 +166,13 @@ int main( int argc, char* argv[] ) {
 	int num_nodes = pow( 4, init_layer );
 	BHTree** nodes = (BHTree**) malloc( num_nodes * sizeof(BHTree*) );
 
+	double elapsed_tree_millis = 0;
+	double elapsed_force_millis = 0;
+
 	for (int iter = 0; iter < T; iter++) {
+
+		tic();
+
 		Tree_init();
 
 		for (int i = 0; i < num_nodes; i++)
@@ -189,8 +205,12 @@ int main( int argc, char* argv[] ) {
 
 			offset += num_threads;
 		}
+
+		elapsed_tree_millis += toc();
 		
 		// printf( "iter = %d\n", iter );
+
+		tic();
 
 		for (int i = 0; i < num_threads; i++)
 			pthread_create( &threads[i], NULL, move_bodies, (void*) &p[i] );
@@ -207,8 +227,12 @@ int main( int argc, char* argv[] ) {
 			DispManager_flush();
 		}
 
+		elapsed_force_millis += toc();
+
 		Tree_free( root );
 	}
+
+	printf( "elapsed_millis: [%lf, %lf] ms.\n", elapsed_tree_millis, elapsed_force_millis );
 
 	return 0;
 }
@@ -345,6 +369,8 @@ Vec2 Force_getForce( int idx1, BHTree* node, double theta, double d ) {
 	direction.x = ( node->position.x - bodySet[idx1].position.x );
 	direction.y = ( node->position.y - bodySet[idx1].position.y );
 	double norm = Vec_norm( direction );
+
+	if ( norm == 0 ) return vec;
 
 	if ( !node->hasChild || d/norm < theta ) {
 		if ( norm < 1e-2 ) norm = 1e-2;
@@ -581,4 +607,14 @@ void Tree_free( BHTree* node ) {
 			Tree_free( node->children[i] );
 		free( node->children );
 	}
+}
+
+void tic() {
+	clock_gettime( CLOCK_REALTIME, &ref_time );
+}
+
+double toc() {
+	struct timespec now;
+	clock_gettime( CLOCK_REALTIME, &now );
+	return (double) ( (now.tv_sec*1e3 + now.tv_nsec*1e-6) - (ref_time.tv_sec*1e3 + ref_time.tv_nsec*1e-6) );
 }

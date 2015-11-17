@@ -6,6 +6,7 @@
 #include <X11/Xlib.h>
 #include <math.h>
 #include <unistd.h>
+#include <time.h>
 
 typedef struct {
 	double x;
@@ -35,6 +36,8 @@ DispManager manager;
 Body* bodySet;
 int num_bodies;
 
+struct timespec ref_time;
+
 /**
  *
  *	Display Manager
@@ -62,6 +65,14 @@ double Vec_norm( Vec2 vec );
  *
  */
 Vec2 Force_getForce( int idx1, int idx2 );
+
+/**
+ *
+ * Time
+ *
+ */
+void tic();
+double toc();
 
 
 
@@ -104,8 +115,10 @@ int main( int argc, char* argv[] ) {
 	if ( strcmp( xwin_en, "enable" ) == 0 )
 		DispManager_init( x_min, y_min, l_coor, l_xwin );
 
+	tic();
+
 	for (int iter = 0; iter < T; iter++) {
-		printf( "iter = %d\n", iter );
+		// printf( "iter = %d\n", iter );
 
 		#pragma omp parallel num_threads(num_threads) firstprivate(num_bodies, t)
 		{
@@ -140,6 +153,9 @@ int main( int argc, char* argv[] ) {
 			DispManager_flush();
 		}
 	}
+
+	double elapsed_millis = toc();
+	printf( "elapsed_millis: %lf ms.\n", elapsed_millis );
 
 	return 0;
 }
@@ -249,4 +265,14 @@ Vec2 Force_getForce( int idx1, int idx2 ) {
 	vec.y = direction.y * mag;
 
 	return vec;
+}
+
+void tic() {
+	clock_gettime( CLOCK_REALTIME, &ref_time );
+}
+
+double toc() {
+	struct timespec now;
+	clock_gettime( CLOCK_REALTIME, &now );
+	return (double) ( (now.tv_sec*1e3 + now.tv_nsec*1e-6) - (ref_time.tv_sec*1e3 + ref_time.tv_nsec*1e-6) );
 }
