@@ -12,11 +12,16 @@ def main():
 	nsteps_data = data["nsteps_var"]
 	nbodies_data = data["nbodies_var"]
 	theta_data = data["theta_var"]
+	SRCC_C_data = data["C_var"]
+	SRCC_T_data = data["T_var"]
 
 	gen_figure(nthreads_data, "nthreads")
 	gen_figure(nsteps_data, "nsteps")
 	gen_figure(nbodies_data, "nbodies")
 	gen_figure(theta_data, "theta")
+
+	gen_SRCC_figure(SRCC_C_data, "SRCC_C")
+	gen_SRCC_figure(SRCC_T_data, "SRCC_T")
 
 
 def gen_figure(data, name):
@@ -61,6 +66,21 @@ def gen_figure(data, name):
 	pyplot.legend()
 	pyplot.title("command: " + cmd)
 
+	pyplot.gcf().set_size_inches(12, 9)
+	pyplot.savefig("./report/" + name + ".png", transparent=True, bbox_inches="tight", pad_inches=0.1)
+	pyplot.gcf().clear()
+
+def gen_SRCC_figure(data, name):
+	cmd = data["command"]
+
+	x = map(lambda x: x[name], data["data"])
+	y = map(lambda x: x["avg_waiting"], data["data"])
+
+	pyplot.plot(x, y, "sb-")
+	pyplot.xlabel(name[-1])
+	pyplot.ylabel("average waiting time (ms)")
+	pyplot.title("command: " + cmd)
+	pyplot.ylim(0, max(y)*1.3)
 	pyplot.gcf().set_size_inches(12, 9)
 	pyplot.savefig("./report/" + name + ".png", transparent=True, bbox_inches="tight", pad_inches=0.1)
 	pyplot.gcf().clear()
