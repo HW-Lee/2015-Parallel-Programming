@@ -60,17 +60,15 @@ int main( int argc, char* argv[] ) {
 
 	#pragma omp parallel num_threads(nthreads)
 	{
-		int rank = omp_get_thread_num();
-
 		complex z;
-		#pragma omp for schedule(static) nowait
-		for (int i = 0; i < width * height; i++) {
-			int x = i / height;
-			int y = i % height;
-			z.real = (real_max - real_min) * (double) x / width + real_min;
-			z.imag = (imag_max - imag_min) * (double) y / height + imag_min;
+		#pragma omp for nowait
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				z.real = (real_max - real_min) * (double) x / width + real_min;
+				z.imag = (imag_max - imag_min) * (double) y / height + imag_min;
 
-			glob_buffer[i] = mandelbort_iter(z);
+				glob_buffer[ x * height + y ] = mandelbort_iter(z);
+			}
 		}
 	}
 
@@ -102,6 +100,8 @@ int main( int argc, char* argv[] ) {
 		XFlush(display);
 		sleep(10);
 	}
+
+	free(glob_buffer);
 	return 0;
 }
 
