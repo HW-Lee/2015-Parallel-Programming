@@ -17,12 +17,12 @@ typedef struct {
 	double imag;
 } complex;
 
-complex mult( complex c1, complex c2 );
-complex add( complex c1, complex c2 );
-complex conj( complex c );
+inline complex mult( complex c1, complex c2 );
+inline complex add( complex c1, complex c2 );
+inline complex conj( complex c );
 
-int mandelbrot_iter( complex c );
-double sigmoid( double v );
+inline int mandelbrot_iter( complex c );
+inline double sigmoid( double v );
 
 struct timespec ref_time;
 
