@@ -20,7 +20,7 @@ complex mult( complex c1, complex c2 );
 complex add( complex c1, complex c2 );
 complex conj( complex c );
 
-int mandelbort_iter( complex c );
+int mandelbrot_iter( complex c );
 double sigmoid( double v );
 
 struct timespec ref_time;
@@ -81,7 +81,7 @@ int main( int argc, char* argv[] ) {
 		z.real = (real_max - real_min) * (double) x / width + real_min;
 		z.imag = (imag_max - imag_min) * (double) y / height + imag_min;
 
-		local_buffer[i - start_idx] = mandelbort_iter(z);
+		local_buffer[i - start_idx] = mandelbrot_iter(z);
 	}
 
 	// printf( "thread%d has done the task\n", rank );
@@ -153,7 +153,7 @@ complex conj( complex c ) {
 	return result;
 }
 
-int mandelbort_iter( complex c ) {
+int mandelbrot_iter( complex c ) {
 	complex z;
 	z.real = 0; z.imag = 0;
 

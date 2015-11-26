@@ -22,7 +22,7 @@ complex mult( complex c1, complex c2 );
 complex add( complex c1, complex c2 );
 complex conj( complex c );
 
-int mandelbort_iter( complex c );
+int mandelbrot_iter( complex c );
 double sigmoid( double v );
 
 struct timespec ref_time;
@@ -76,7 +76,7 @@ int main( int argc, char* argv[] ) {
 			z.real = (real_max - real_min) * (double) x / width + real_min;
 			z.imag = (imag_max - imag_min) * (double) y / height + imag_min;
 
-			glob_buffer[i] = mandelbort_iter(z);
+			glob_buffer[i] = mandelbrot_iter(z);
 		}
 
 	} else {
@@ -140,7 +140,7 @@ int main( int argc, char* argv[] ) {
 					z.real = (real_max - real_min) * (double) x / width + real_min;
 					z.imag = (imag_max - imag_min) * (double) y / height + imag_min;
 
-					col_iters_send[y] = mandelbort_iter(z);
+					col_iters_send[y] = mandelbrot_iter(z);
 				}
 
 				MPI_Send( col_iters_send, height, MPI_INT, master, x, MPI_COMM_WORLD );
@@ -207,7 +207,7 @@ complex conj( complex c ) {
 	return result;
 }
 
-int mandelbort_iter( complex c ) {
+int mandelbrot_iter( complex c ) {
 	complex z;
 	z.real = 0; z.imag = 0;
 
