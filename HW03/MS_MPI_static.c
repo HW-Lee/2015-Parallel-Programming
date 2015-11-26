@@ -21,6 +21,7 @@ complex add( complex c1, complex c2 );
 complex conj( complex c );
 
 int mandelbort_iter( complex c );
+double sigmoid( double v );
 
 struct timespec ref_time;
 
@@ -113,7 +114,7 @@ int main( int argc, char* argv[] ) {
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				int color = 1024 * 1024 * (int) (glob_buffer[i * height + j] % 256);
+				int color = 64 * 1024 * (int) ( (2 * sigmoid( logl(glob_buffer[ i * height + j ]) ) - 1) * 255.0 );
 				color |= color >> 8 | color >> 16;
 				XSetForeground(display, gc, color );	
 				XDrawPoint(display, window, gc, i, j);
@@ -123,6 +124,8 @@ int main( int argc, char* argv[] ) {
 		XFlush(display);
 		sleep(10);
 	}
+
+	if ( rank == 0 ) free(glob_buffer);
 
 	MPI_Barrier( MPI_COMM_WORLD );
     MPI_Finalize();
@@ -163,6 +166,10 @@ int mandelbort_iter( complex c ) {
 	}
 
 	return iter;
+}
+
+double sigmoid( double v ) {
+	return 1 / (1 + pow(2, -v));
 }
 
 void tic() {

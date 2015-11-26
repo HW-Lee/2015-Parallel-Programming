@@ -22,6 +22,7 @@ complex add( complex c1, complex c2 );
 complex conj( complex c );
 
 int mandelbort_iter( complex c );
+double sigmoid( double v );
 
 struct timespec ref_time;
 
@@ -63,7 +64,6 @@ int main( int argc, char* argv[] ) {
 		complex z;
 		#pragma omp for schedule(dynamic, 1) nowait
 		for (int x = 0; x < width; x++) {
-			printf( "Thread%d processes column %d\n", omp_get_thread_num(), x );
 			for (int y = 0; y < height; y++) {
 				z.real = (real_max - real_min) * (double) x / width + real_min;
 				z.imag = (imag_max - imag_min) * (double) y / height + imag_min;
@@ -91,7 +91,7 @@ int main( int argc, char* argv[] ) {
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				int color = 1024 * 1024 * (int) (glob_buffer[i * height + j] % 256);
+				int color = 64 * 1024 * (int) ( (2 * sigmoid( logl(glob_buffer[ i * height + j ]) ) - 1) * 255.0 );
 				color |= color >> 8 | color >> 16;
 				XSetForeground(display, gc, color );	
 				XDrawPoint(display, window, gc, i, j);
@@ -140,6 +140,10 @@ int mandelbort_iter( complex c ) {
 	}
 
 	return iter;
+}
+
+double sigmoid( double v ) {
+	return 1 / (1 + pow(2, -v));
 }
 
 void tic() {
