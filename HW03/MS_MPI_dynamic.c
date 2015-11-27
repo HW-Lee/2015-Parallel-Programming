@@ -39,6 +39,9 @@ double toc();
 int main( int argc, char* argv[] ) {
 
 	int rank, size;
+	double comp_millis = 0;
+	double sync_millis = 0;
+    double comm_millis = 0;
 
 	MPI_Init( &argc, &argv );
     MPI_Comm_size( MPI_COMM_WORLD, &size );
@@ -69,6 +72,7 @@ int main( int argc, char* argv[] ) {
 
 	if ( size == 1 ) {
 
+		tic();
 		complex z;
 		for (int i = 0; i < width * height; i++) {
 			int x = i / height;
@@ -78,6 +82,7 @@ int main( int argc, char* argv[] ) {
 
 			glob_buffer[i] = mandelbrot_iter(z);
 		}
+		comp_millis += toc();
 
 	} else {
 
@@ -98,28 +103,36 @@ int main( int argc, char* argv[] ) {
 				colIdx_send = width - num_pending;
 				num_pending--;
 				int tag = ( colIdx_send < 0 ) ? TAG_TERMINATE : TAG_DOOPERATION;
+
+				tic();
 				MPI_Send( &colIdx_send, 1, MPI_INT, i, tag, MPI_COMM_WORLD );
+				comm_millis += toc();
 			}
 
 			while (true) {
 				MPI_Iprobe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status );
 
 				if ( flag ) {
+					sync_millis += toc();
+
 					src = status.MPI_SOURCE;
+
+					tic();
 					MPI_Recv( &(glob_buffer[status.MPI_TAG * height]), height, MPI_INT, src, MPI_ANY_TAG, MPI_COMM_WORLD, &status );
 
-					// printf( "Thread%d has done the column at %d\n", src, status.MPI_TAG );
 					if ( num_pending > 0 ) {
 						colIdx_send = width - num_pending;
 						num_pending--;
 						MPI_Send( &colIdx_send, 1, MPI_INT, src, TAG_DOOPERATION, MPI_COMM_WORLD );
-						// printf( "Master sends %d to thread%d\n", colIdx_send, src );
+						comm_millis += toc();
 					} else {
 						MPI_Send( &colIdx_send, 1, MPI_INT, src, TAG_TERMINATE, MPI_COMM_WORLD );
-						// printf( "Master sends termination to thread%d\n", src );
+						comm_millis += toc();
 						num_termination_sent++;
 						if ( num_termination_sent == size-1 ) break;
 					}
+
+					tic();
 				}
 			}
 
@@ -133,22 +146,33 @@ int main( int argc, char* argv[] ) {
 
 			complex z;
 			while (true) {
+				tic();
 				MPI_Recv( &x, 1, MPI_INT, master, MPI_ANY_TAG, MPI_COMM_WORLD, &status );
+				comm_millis += toc();
 
 				if ( status.MPI_TAG == TAG_TERMINATE ) break;
+
+				tic();
 				for (int y = 0; y < height; y++) {
 					z.real = (real_max - real_min) * (double) x / width + real_min;
 					z.imag = (imag_max - imag_min) * (double) y / height + imag_min;
 
 					col_iters_send[y] = mandelbrot_iter(z);
 				}
+				comp_millis += toc();
 
+				tic();
 				MPI_Send( col_iters_send, height, MPI_INT, master, x, MPI_COMM_WORLD );
+				comm_millis += toc();
 			}
 			
 		}
 
 	}
+
+	tic();
+	MPI_Barrier( MPI_COMM_WORLD );
+	sync_millis += toc();
 
 	if ( rank == 0 && DRAW_RESULT ) {
 		display = XOpenDisplay(NULL);
@@ -180,6 +204,8 @@ int main( int argc, char* argv[] ) {
 	}
 
 	if ( rank == 0 ) free(glob_buffer);
+
+	printf( "{\n\t\"id\": %d,\n\t\"comp_millis\": %lf,\n\t\"sync_millis\": %lf,\n\t\"comm_millis\": %lf\n}\n", rank, comp_millis, sync_millis, comm_millis );
 
 	MPI_Barrier( MPI_COMM_WORLD );
     MPI_Finalize();

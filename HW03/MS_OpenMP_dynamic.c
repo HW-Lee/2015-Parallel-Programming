@@ -24,15 +24,13 @@ inline complex conj( complex c );
 inline int mandelbrot_iter( complex c );
 inline double sigmoid( double v );
 
-struct timespec ref_time;
-
 /**
  *
  * Time
  *
  */
-void tic();
-double toc();
+void tic( struct timespec *ref_time );
+double toc( struct timespec *ref_time );
 
 int main( int argc, char* argv[] ) {
 
@@ -59,19 +57,47 @@ int main( int argc, char* argv[] ) {
 
 	glob_buffer = (int *) malloc( width * height * sizeof(int) );
 
+	int* cols_thread_id = (int *) malloc( width * sizeof(int) );
+	double* cols_elapsed_millis = (double *) malloc( width * sizeof(double) );
+
 	#pragma omp parallel num_threads(nthreads)
 	{
 		complex z;
+		struct timespec ref_time;
+
+		double comp_millis = 0;
+	    double sync_millis = 0;
+	    double comm_millis = 0;
+
 		#pragma omp for schedule(dynamic, 1) nowait
 		for (int x = 0; x < width; x++) {
+			cols_thread_id[x] = omp_get_thread_num();
+
+			tic(&ref_time);
 			for (int y = 0; y < height; y++) {
 				z.real = (real_max - real_min) * (double) x / width + real_min;
 				z.imag = (imag_max - imag_min) * (double) y / height + imag_min;
 
 				glob_buffer[ x * height + y ] = mandelbrot_iter(z);
 			}
+			cols_elapsed_millis[x] = toc(&ref_time);
+			comp_millis += cols_elapsed_millis[x];
 		}
+
+		tic(&ref_time);
+		#pragma omp barrier
+		sync_millis += toc(&ref_time);
+
+		printf( "{\n\t\"id\": %d,\n\t\"comp_millis\": %lf,\n\t\"sync_millis\": %lf,\n\t\"comm_millis\": %lf\n}\n", omp_get_thread_num(), comp_millis, sync_millis, comm_millis );
+
 	}
+
+	printf( "{\n\t\"elapsed-detail\": [" );
+	for (int i = 0; i < width; i++) {
+		printf( "\n\t\t[%d, %lf]", cols_thread_id[i], cols_elapsed_millis[i] );
+		if ( i < width-1 ) printf( "," );
+	}
+	printf( "\n}\n" );
 
 	if ( DRAW_RESULT ) {
 		display = XOpenDisplay(NULL);
@@ -146,13 +172,12 @@ double sigmoid( double v ) {
 	return 1 / (1 + pow(2, -v));
 }
 
-void tic() {
-	clock_gettime( CLOCK_REALTIME, &ref_time );
+void tic( struct timespec *ref_time ) {
+	clock_gettime( CLOCK_REALTIME, ref_time );
 }
 
-double toc() {
+double toc( struct timespec *ref_time ) {
 	struct timespec now;
 	clock_gettime( CLOCK_REALTIME, &now );
-	return (double) ( (now.tv_sec*1e3 + now.tv_nsec*1e-6) - (ref_time.tv_sec*1e3 + ref_time.tv_nsec*1e-6) );
+	return (double) ( (now.tv_sec*1e3 + now.tv_nsec*1e-6) - (ref_time->tv_sec*1e3 + ref_time->tv_nsec*1e-6) );
 }
-

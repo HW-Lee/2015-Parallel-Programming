@@ -37,6 +37,9 @@ double toc();
 int main( int argc, char* argv[] ) {
 
 	int rank, size;
+    double comp_millis = 0;
+    double sync_millis = 0;
+    double comm_millis = 0;
 
 	MPI_Init( &argc, &argv );
     MPI_Comm_size( MPI_COMM_WORLD, &size );
@@ -72,8 +75,7 @@ int main( int argc, char* argv[] ) {
 	int start_idx = rank * local_buffer_size;
 	int end_idx = ( rank < size-1 ) ? start_idx + local_buffer_size : width * height;
 
-	// printf( "thread%d processes [%d, %d)\n", rank, start_idx, end_idx );
-
+    tic();
 	complex z;
 	for (int i = start_idx; i < end_idx; i++) {
 		int x = i / height;
@@ -83,17 +85,24 @@ int main( int argc, char* argv[] ) {
 
 		local_buffer[i - start_idx] = mandelbrot_iter(z);
 	}
+    comp_millis += toc();
 
-	// printf( "thread%d has done the task\n", rank );
+    tic();
+    MPI_Barrier( MPI_COMM_WORLD );
+    sync_millis += toc();
 
-	// MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+    tic();
+    // MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
 	MPI_Gather( local_buffer, local_buffer_size, MPI_INT, glob_buffer, local_buffer_size, MPI_INT, 0, MPI_COMM_WORLD );
+    comm_millis += toc();
 
 	if ( (width * height) % size > 0 ) {
+        tic();
 		if ( rank == size-1 )
 			MPI_Send( &( local_buffer[local_buffer_size] ), (width * height) % size, MPI_INT, 0, 0, MPI_COMM_WORLD );
 		if ( rank == 0 )
 			MPI_Recv( &( glob_buffer[local_buffer_size * size] ), (width * height) % size, MPI_INT, size-1, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+        comm_millis += toc();
 	}
 
 	if ( rank == 0 && DRAW_RESULT ) {
@@ -126,6 +135,8 @@ int main( int argc, char* argv[] ) {
 	}
 
 	if ( rank == 0 ) free(glob_buffer);
+
+    printf( "{\n\t\"id\": %d,\n\t\"comp_millis\": %lf,\n\t\"sync_millis\": %lf,\n\t\"comm_millis\": %lf\n}\n", rank, comp_millis, sync_millis, comm_millis );
 
 	MPI_Barrier( MPI_COMM_WORLD );
     MPI_Finalize();
