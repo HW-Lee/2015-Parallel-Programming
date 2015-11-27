@@ -16,7 +16,7 @@ def build_code(path):
 
 	if os.path.exists( full_path + ".c" ):
 		
-		if path.startswith("MS_OpenMP"): compiler = "g++ -lX11 "
+		if path.startswith("MS_OpenMP"): compiler = "g++ -O3 -lX11 "
 		else: compiler = "mpic++ -lX11 "
 		if not path.startswith("MS_MPI"): compiler += "-fopenmp "
 
