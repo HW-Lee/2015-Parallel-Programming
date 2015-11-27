@@ -73,8 +73,6 @@ int main( int argc, char* argv[] ) {
 	int start_idx = rank * local_buffer_size;
 	int end_idx = ( rank < size-1 ) ? start_idx + local_buffer_size : width * height;
 
-	// printf( "thread%d processes [%d, %d)\n", rank, start_idx, end_idx );
-
 	#pragma omp parallel num_threads(nthreads)
 	{
 		complex z;
@@ -89,8 +87,6 @@ int main( int argc, char* argv[] ) {
 			local_buffer[i - start_idx] = mandelbrot_iter(z);
 		}
 	}
-
-	// printf( "thread%d has done the task\n", rank );
 
 	// MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
 	MPI_Gather( local_buffer, local_buffer_size, MPI_INT, glob_buffer, local_buffer_size, MPI_INT, 0, MPI_COMM_WORLD );

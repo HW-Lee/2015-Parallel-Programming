@@ -114,15 +114,12 @@ int main( int argc, char* argv[] ) {
 					src = status.MPI_SOURCE;
 					MPI_Recv( &(glob_buffer[status.MPI_TAG * height]), height, MPI_INT, src, MPI_ANY_TAG, MPI_COMM_WORLD, &status );
 
-					// printf( "Thread%d has done the column at %d\n", src, status.MPI_TAG );
 					if ( num_pending > 0 ) {
 						colIdx_send = width - num_pending;
 						num_pending--;
 						MPI_Send( &colIdx_send, 1, MPI_INT, src, TAG_DOOPERATION, MPI_COMM_WORLD );
-						// printf( "Master sends %d to thread%d\n", colIdx_send, src );
 					} else {
 						MPI_Send( &colIdx_send, 1, MPI_INT, src, TAG_TERMINATE, MPI_COMM_WORLD );
-						// printf( "Master sends termination to thread%d\n", src );
 						num_termination_sent++;
 						if ( num_termination_sent == size-1 ) break;
 					}
