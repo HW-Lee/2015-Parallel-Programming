@@ -90,9 +90,12 @@ In the project, the program is implemented with three different APIs, MPI/OpenMP
     \end{SCfigure}
 \end{itemize}
 
+In Hybrid implementations, they follow the same jobs partition strategies as MPI implementations do, and OpenMP is applied when processing a column by dynamically assigning each point in the column to threads.
+
 \newpage
 
-\section*{Analysis \& Results}
+\vspace{-2cm}
+\section*{Results}
 \vspace{-20pt}
 \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
 
@@ -118,26 +121,69 @@ In the project, the program is implemented with three different APIs, MPI/OpenMP
 
     \item Cost of each worker
     \begin{figure}[ht]
-        \hspace{-2cm}
+        \hspace{-1cm}
         \begin{minipage}{.48\textwidth}
-            \includegraphics[scale=.4]{./threads_load_MPI.png}
+            \includegraphics[scale=.35]{./threads_load_MPI.png}
         \end{minipage}
-        \hspace{2cm}
+        \hspace{1cm}
         \begin{minipage}{.48\textwidth}
-            \includegraphics[scale=.4]{./threads_load_OpenMP.png}
+            \includegraphics[scale=.35]{./threads_load_OpenMP.png}
         \end{minipage}
     \end{figure}
+
+    \vspace{-1cm}
     \begin{SCfigure}[][ht]
-        \hspace{-2cm}
-        \includegraphics[scale=.4]{./threads_load_MPI.png}
+        \hspace{-1cm}
+        \includegraphics[scale=.35]{./threads_load_MPI.png}
+        \hspace{1cm}
         \vspace{-.5cm}
-        \caption{Loads of each worker: MPI(left-upper), \hspace{\textwidth}OpenMP(right-upper), and Hybrid(left-lower). Execution time is highly dominated by the worker who processes the most tough part of data in static implementations, while it is equally distributed to workers such that the synchronization is very low in dynamic implementations}
+        \caption{Loads of each worker: \hspace{\textwidth}MPI(left-upper), OpenMP(right-upper), and Hybrid(left-lower). Execution time is highly dominated by the worker who processes the toughest part of data in static implementations, while it is equally distributed to workers such that the synchronization is very low in dynamic implementations. Note that worker0 always waits for others in both MPI and Hybrid implementation because the worker is assigned to be the master that manages scheduling and handles the parallel jobs.}
+    \end{SCfigure}
+
+    \vspace{-.5cm}
+    \item Speedup
+    \begin{SCfigure}[][ht]
+        \hspace{-1cm}
+        \includegraphics[scale=.45]{./speedup.png}
+        \vspace{-.5cm}
+        \caption{Speedup factors}
+        \vspace{-5cm}
     \end{SCfigure}
 \end{itemize}
 
-\section*{Discussion}
+\newpage
+
+\section*{Analysis \& Discussion}
 \vspace{-20pt}
 \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+\begin{itemize}
+    \item Computation Complexity
+
+    \item Work scheduling
+    \begin{figure}[ht]
+        \hspace{-2cm}
+        \begin{minipage}{.48\textwidth}
+            \includegraphics[scale=.4]{./load_dist_static.png}
+        \end{minipage}
+        \hspace{2cm}
+        \begin{minipage}{.48\textwidth}
+            \includegraphics[scale=.4]{./load_dist_dynamic.png}
+        \end{minipage}
+    \end{figure}
+
+    \item Speedup results
+
+    \item Coloring
+    \begin{figure}[ht]
+        \begin{minipage}{.48\textwidth}
+            \includegraphics[scale=.4]{./coloring_hw.png}
+        \end{minipage}
+        \begin{minipage}{.48\textwidth}
+            \includegraphics[scale=.4]{./coloring_16bit.png}
+        \end{minipage}
+    \end{figure}
+\end{itemize}
 
 \end{CJK}
 \end{document}
