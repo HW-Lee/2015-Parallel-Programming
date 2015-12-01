@@ -1,0 +1,182 @@
+[s103061527@pp08 hw2]$ ./a.out 10 5 2500 10
+Passenger2 gets in!
+Passenger8 gets in!
+Passenger3 gets in!
+Passenger5 gets in!
+Passenger6 gets in!
+The car is full.
+car departures at 1 millisec. Passengers2, 8, 3, 5, and 6 are in the car.
+car arrives at 2501 millisec. 2, 8, 3, 5, and 6 passengers get off.
+Passenger6 wanders around the park.
+Passenger8 wanders around the park.
+Passenger4 gets in!
+Passenger1 gets in!
+Passenger9 gets in!
+Passenger10 gets in!
+Passenger2 wanders around the park.
+Passenger3 wanders around the park.
+Passenger5 wanders around the park.
+Passenger7 gets in!
+The car is full.
+car departures at 2503 millisec. Passengers4, 1, 9, 10, and 7 are in the car.
+Passenger2 returns for another ride.
+Passenger5 returns for another ride.
+car arrives at 5003 millisec. 4, 1, 9, 10, and 7 passengers get off.
+Passenger7 wanders around the park.
+Passenger10 wanders around the park.
+Passenger9 wanders around the park.
+Passenger2 gets in!
+Passenger5 gets in!
+Passenger4 wanders around the park.
+Passenger1 wanders around the park.
+Passenger4 returns for another ride.
+Passenger4 gets in!
+Passenger3 returns for another ride.
+Passenger3 gets in!
+Passenger6 returns for another ride.
+Passenger6 gets in!
+The car is full.
+car departures at 6232 millisec. Passengers2, 5, 4, 3, and 6 are in the car.
+Passenger10 returns for another ride.
+Passenger8 returns for another ride.
+Passenger9 returns for another ride.
+Passenger7 returns for another ride.
+car arrives at 8732 millisec. 2, 5, 4, 3, and 6 passengers get off.
+Passenger4 wanders around the park.
+Passenger5 wanders around the park.
+Passenger8 gets in!
+Passenger6 wanders around the park.
+Passenger7 gets in!
+Passenger2 wanders around the park.
+Passenger10 gets in!
+Passenger3 wanders around the park.
+Passenger9 gets in!
+Passenger1 returns for another ride.
+Passenger1 gets in!
+The car is full.
+car departures at 9104 millisec. Passengers8, 7, 10, 9, and 1 are in the car.
+Passenger3 returns for another ride.
+Passenger6 returns for another ride.
+Passenger2 returns for another ride.
+car arrives at 11604 millisec. 8, 7, 10, 9, and 1 passengers get off.
+Passenger1 wanders around the park.
+Passenger8 wanders around the park.
+Passenger3 gets in!
+Passenger6 gets in!
+Passenger2 gets in!
+Passenger7 wanders around the park.
+Passenger9 wanders around the park.
+Passenger10 wanders around the park.
+Passenger7 returns for another ride.
+Passenger7 gets in!
+Passenger4 returns for another ride.
+Passenger4 gets in!
+The car is full.
+car departures at 13119 millisec. Passengers3, 6, 2, 7, and 4 are in the car.
+Passenger5 returns for another ride.
+Passenger1 returns for another ride.
+car arrives at 15619 millisec. 3, 6, 2, 7, and 4 passengers get off.
+Passenger3 wanders around the park.
+Passenger7 wanders around the park.
+Passenger2 wanders around the park.
+Passenger4 wanders around the park.
+Passenger6 wanders around the park.
+Passenger5 gets in!
+Passenger1 gets in!
+Passenger8 returns for another ride.
+Passenger8 gets in!
+Passenger9 returns for another ride.
+Passenger9 gets in!
+Passenger10 returns for another ride.
+Passenger10 gets in!
+The car is full.
+car departures at 16403 millisec. Passengers5, 1, 8, 9, and 10 are in the car.
+Passenger3 returns for another ride.
+Passenger4 returns for another ride.
+Passenger7 returns for another ride.
+Passenger2 returns for another ride.
+car arrives at 18903 millisec. 5, 1, 8, 9, and 10 passengers get off.
+Passenger10 wanders around the park.
+Passenger8 wanders around the park.
+Passenger3 gets in!
+Passenger4 gets in!
+Passenger2 gets in!
+Passenger9 wanders around the park.
+Passenger5 wanders around the park.
+Passenger1 wanders around the park.
+Passenger7 gets in!
+Passenger1 returns for another ride.
+Passenger1 gets in!
+The car is full.
+car departures at 19092 millisec. Passengers3, 4, 2, 7, and 1 are in the car.
+Passenger6 returns for another ride.
+Passenger10 returns for another ride.
+Passenger9 returns for another ride.
+Passenger8 returns for another ride.
+Passenger5 returns for another ride.
+car arrives at 21592 millisec. 3, 4, 2, 7, and 1 passengers get off.
+Passenger1 wanders around the park.
+Passenger7 wanders around the park.
+Passenger9 gets in!
+Passenger5 gets in!
+Passenger8 gets in!
+Passenger6 gets in!
+Passenger2 wanders around the park.
+Passenger10 gets in!
+The car is full.
+car departures at 21593 millisec. Passengers9, 5, 8, 6, and 10 are in the car.
+Passenger4 wanders around the park.
+Passenger3 wanders around the park.
+Passenger3 returns for another ride.
+Passenger2 returns for another ride.
+car arrives at 24093 millisec. 9, 5, 8, 6, and 10 passengers get off.
+Passenger10 wanders around the park.
+Passenger9 wanders around the park.
+Passenger6 wanders around the park.
+Passenger5 wanders around the park.
+Passenger8 wanders around the park.
+Passenger2 gets in!
+Passenger3 gets in!
+Passenger7 returns for another ride.
+Passenger7 gets in!
+Passenger4 returns for another ride.
+Passenger4 gets in!
+Passenger9 returns for another ride.
+Passenger9 gets in!
+The car is full.
+car departures at 24736 millisec. Passengers2, 3, 7, 4, and 9 are in the car.
+Passenger1 returns for another ride.
+Passenger10 returns for another ride.
+car arrives at 27236 millisec. 2, 3, 7, 4, and 9 passengers get off.
+Passenger9 wanders around the park.
+Passenger1 gets in!
+Passenger10 gets in!
+Passenger2 wanders around the park.
+Passenger3 wanders around the park.
+Passenger7 wanders around the park.
+Passenger4 wanders around the park.
+Passenger8 returns for another ride.
+Passenger8 gets in!
+Passenger6 returns for another ride.
+Passenger6 gets in!
+Passenger2 returns for another ride.
+Passenger2 gets in!
+The car is full.
+car departures at 28617 millisec. Passengers1, 10, 8, 6, and 2 are in the car.
+Passenger5 returns for another ride.
+Passenger9 returns for another ride.
+Passenger7 returns for another ride.
+Passenger4 returns for another ride.
+Passenger3 returns for another ride.
+car arrives at 31117 millisec. 1, 10, 8, 6, and 2 passengers get off.
+Passenger10 waits 6290.225098 ms in total.
+Passenger5 waits 6523.611572 ms in total.
+Passenger9 waits 7213.092041 ms in total.
+Passenger4 waits 4600.947021 ms in total.
+Passenger8 waits 7434.065430 ms in total.
+Passenger2 waits 5745.358887 ms in total.
+Passenger7 waits 5513.013672 ms in total.
+Passenger3 waits 5746.339355 ms in total.
+Passenger6 waits 6189.940430 ms in total.
+Passenger1 waits 4922.650635 ms in total.
+Average waiting time: 6017.924414 ms
