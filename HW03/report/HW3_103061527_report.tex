@@ -134,7 +134,7 @@ In Hybrid implementations, they follow the same jobs partition strategies as MPI
     \vspace{-1cm}
     \begin{SCfigure}[][ht]
         \hspace{-1cm}
-        \includegraphics[scale=.35]{./threads_load_MPI.png}
+        \includegraphics[scale=.35]{./threads_load_Hybrid.png}
         \hspace{1cm}
         \vspace{-.5cm}
         \caption{Loads of each worker: \hspace{\textwidth}MPI(left-upper), OpenMP(right-upper), and Hybrid(left-lower). Execution time is highly dominated by the worker who processes the toughest part of data in static implementations, while it is equally distributed to workers such that the synchronization is very low in dynamic implementations. Note that worker0 always waits for others in both MPI and Hybrid implementation because the worker is assigned to be the master that manages scheduling and handles the parallel jobs.}
@@ -158,9 +158,40 @@ In Hybrid implementations, they follow the same jobs partition strategies as MPI
 \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
 
 \begin{itemize}
-    \item Computation Complexity
+    \vspace{-10pt}
+    \item Computation complexity
+    \begin{flushleft}
+        Assumed that there are $N_{pt}$ points need to be computed by $N_{wks}$ workers with a maximal number of iterations $N_{mxit}$, and then the complexity can be obtained as below:
+    \end{flushleft}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            \diaghead{\theadfont Diag ColumnmnHead II}{Implementation}{Type} & Comm. & Comp. & Overall & Prop. to \\
+            \hline
+            MPI & $O\Big(N_{pt}\Big)$ & $O\Big(\frac{N_{pt}N_{mxit}}{N_{wks}-1}\Big)$ & $O\Big(\frac{N_{pt}N_{mxit}}{N_{wks}-1}\Big)$ & $\frac{1}{N_{wks}-1}$ \\
+            \hline
+            OpenMP & N/A & $O\Big(\frac{N_{pt}N_{mxit}}{N_{wks}}\Big)$ & $O\Big(\frac{N_{pt}N_{mxit}}{N_{wks}}\Big)$ & $\frac{1}{N_{wks}}$ \\
+            \hline
+            Hybrid & $O\Big(N_{pt}\Big)$ & $O\Big(\frac{N_{pt}N_{mxit}}{N_{wks}-1}\Big)$ & $O\Big(\frac{N_{pt}N_{mxit}}{N_{wks}-1}\Big)$ & $\frac{1}{N_{wks}-1}$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \begin{flushleft}
+        In MPI/Hybrid implementations, communication only used for gathering computed results and the complexity, therefore, can be estimated as $O(N_{pt})$, which means it is propotional to the problem size. In fact, it should be $O(N_{pt} + \sqrt{N_{pt}})$ in dynamic implemenations because the master must send $\sqrt{N_{pt}}$ indices of colunms to slaves during the operations. However, it is much smaller than computation loadings so communication consumptions can be ignored. In computation stage, the complexity should be propotional to $N_{pt}$, $N_{mxit}$, and $\frac{1}{N_{wks}-1}$ (because one worker must be the master managing working process dynamically) then it is noted as $O(\frac{N_{pt}N_{mxit}}{N_{wks}-1})$. After all, the observed results fit the expectation shown above then I can conclude that the implemenations work well and reasonably.
+    \end{flushleft}
+
+    \item Speedup results
+    \begin{flushleft}
+        According to Figure 7, it shows dynamic implementations are superior to static ones. Both dynamic implementations yield good results: which grow linearly as the number of workers increases, and the performance of dynamic MPI saturates gradually at high number of workers, the reason might be caused by communication. \\
+        In fact, all implementations show the results getting decay as the number of workers increases. However, execution time of static implementations is always dominated by the toughest regions which require lots of iterations to check if each point belongs to the Mandelbrot set. Therefore, the efficiency of parallelizing is not significant.
+    \end{flushleft}
+
+    \newpage
 
     \item Work scheduling
+    \begin{flushleft}
+        The figures shown below illustrate how the works have been partitioned, and the numbers at the end of labels refer to the number of columns that are assigned to the corresponded worker. In such visualization, the fact that equally separating tasks into several parts is not a good strategy because the loadings of workers are not balanced. To pronounce the correctness of this conclusion, the computation time is visualized with log-scale so that how unbalanced the works are can be easily observed.
+    \end{flushleft}
     \begin{figure}[ht]
         \hspace{-2cm}
         \begin{minipage}{.48\textwidth}
@@ -172,17 +203,29 @@ In Hybrid implementations, they follow the same jobs partition strategies as MPI
         \end{minipage}
     \end{figure}
 
-    \item Speedup results
+    \item Performance with various resource configurations
+    \begin{SCfigure}[][ht]
+        \includegraphics[scale=.5]{./res_dist_exec.png}
+        \vspace{-.5cm}
+        \caption{Execution time with different number of nodes/ppn: the results show that there is little difference between configurations when applying dynamic scheduling, while applying static scheduling with two nodes seems to be a better choice.}
+    \end{SCfigure}
 
     \item Coloring
+    \begin{flushleft}
+        In addition to all works mentioned above which are related to performance concerns, the way checking if the program works accurately is also important. Therefore, it might be a good solution to display a 2-D diagram where each pixel refers to iterations at that position because the results can be checked in a visually/intuitively. The mapping function mapped from integer to gray scale suggested originally is $f(x) = (x \mod 256) / 255.0$, this function can not acctually illustrate the real magnitude, i.e. $f(x) \ngtr f(y)$, $\forall x > y$. As a result, I decide to use sigmoid function $\phi(x) = \frac{1}{1 + \exp(-x)}$ and propose a monotonic function $g(x) = 2 \times \phi(\log(x)) - 1$, $g(x) \in [0, \, 1]$. \\ The visual results have been shown below:
+    \end{flushleft}
     \begin{figure}[ht]
         \begin{minipage}{.48\textwidth}
             \includegraphics[scale=.4]{./coloring_hw.png}
+            \caption{Visual result (8-bit)}
         \end{minipage}
         \begin{minipage}{.48\textwidth}
             \includegraphics[scale=.4]{./coloring_16bit.png}
+            \caption{Visual result (16-bit)}
         \end{minipage}
     \end{figure}
+
+    \item Things I have learnt
 \end{itemize}
 
 \end{CJK}
