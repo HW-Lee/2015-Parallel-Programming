@@ -182,8 +182,8 @@ In Hybrid implementations, they follow the same jobs partition strategies as MPI
 
     \item Speedup results
     \begin{flushleft}
-        According to Figure 7, it shows dynamic implementations are superior to static ones. Both dynamic implementations yield good results: which grow linearly as the number of workers increases, and the performance of dynamic MPI saturates gradually at high number of workers, the reason might be caused by communication. \\
-        In fact, all implementations show the results getting decay as the number of workers increases. However, execution time of static implementations is always dominated by the toughest regions which require lots of iterations to check if each point belongs to the Mandelbrot set. Therefore, the efficiency of parallelizing is not significant.
+        According to Figure 7, it shows dynamic implementations are superior to static ones. Both dynamic implementations yield good results: which grow linearly as the number of workers increases, and the performance of dynamic MPI saturates gradually at high number of workers, the fact might be caused by communication. \\
+        In fact, all implementations show the results decaying linearly as the number of workers increases. However, execution time of static implementations is always dominated by the toughest regions which require lots of iterations to check if each point belongs to the Mandelbrot set. Therefore, the efficiency of parallelizing is not significant.
     \end{flushleft}
 
     \newpage
@@ -212,7 +212,7 @@ In Hybrid implementations, they follow the same jobs partition strategies as MPI
 
     \item Coloring
     \begin{flushleft}
-        In addition to all works mentioned above which are related to performance concerns, the way checking if the program works accurately is also important. Therefore, it might be a good solution to display a 2-D diagram where each pixel refers to iterations at that position because the results can be checked in a visually/intuitively. The mapping function mapped from integer to gray scale suggested originally is $f(x) = (x \mod 256) / 255.0$, this function can not acctually illustrate the real magnitude, i.e. $f(x) \ngtr f(y)$, $\forall x > y$. As a result, I decide to use sigmoid function $\phi(x) = \frac{1}{1 + \exp(-x)}$ and propose a monotonic function $g(x) = 2 \times \phi(\log(x)) - 1$, $g(x) \in [0, \, 1]$. \\ The visual results have been shown below:
+        In addition to all works mentioned above which are related to performance concerns, the way checking if the program works accurately is also important. Therefore, it might be a good solution to display a 2-D diagram where each pixel refers to iterations at that position because the results can be checked visually/intuitively. The mapping function mapped from integers to gray scales suggested originally is $f(x) = (x \mod 256) / 255.0$, this function, however, cannot acctually illustrate the real magnitude, i.e. $f(x) \ngtr f(y)$, $\forall x > y$. As a result, I decide to use sigmoid function $\phi(x) = \frac{1}{1 + \exp(-x)}$ and propose a monotonic function $g(x) = 2 \times \phi(\log(x)) - 1$, $g(x) \in [0, \, 1]$. \\ The visual results have been shown below:
     \end{flushleft}
     \begin{figure}[ht]
         \begin{minipage}{.48\textwidth}
@@ -224,9 +224,22 @@ In Hybrid implementations, they follow the same jobs partition strategies as MPI
             \caption{Visual result (16-bit)}
         \end{minipage}
     \end{figure}
-
-    \item Things I have learnt
 \end{itemize}
+
+This project provides an practice to experience advantages and disadvantages of MPI/OpenMP relatively, and to make good use of both models and optimize the algorithm we want to implement.
+
+\begin{itemize}
+    \item MPI (Distributed Memory/Message Passing Model)
+    \begin{flushleft}
+        The main feature of MPI is providing communication interface between processes, and it is limited by communications time consumption as the number of processes increases.
+    \end{flushleft}
+    \item OpenMP (Shared Memory/Threads Model)
+    \begin{flushleft}
+        The main feature of OpenMP is providing memory management interface between threads, and it is limited by scability, in other word, it is limited by the number of physical cores built in a computer.
+    \end{flushleft}
+\end{itemize}
+
+Hybrid is used for compensating disadvantages and combining advantages of MPI and OpenMP: 1) reducing memory duplication with shared memory, 2) reducing communications, 3) increasing portability, 4) increasing scability for advanced systems.
 
 \end{CJK}
 \end{document}
