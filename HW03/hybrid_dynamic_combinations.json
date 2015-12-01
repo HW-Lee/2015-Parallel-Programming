@@ -1,0 +1,1924 @@
+[
+    {
+        "exec_e": 27.29, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 26597.372803
+            }, 
+            {
+                "comp_millis": 26585.239746, 
+                "id": 1, 
+                "sync_millis": 0.758789
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 1
+    }, 
+    {
+        "exec_e": 9.283, 
+        "exec_o": [
+            {
+                "comp_millis": 8921.299316, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 8921.314941
+            }, 
+            {
+                "comp_millis": 8848.509766, 
+                "id": 3, 
+                "sync_millis": 65.851562
+            }, 
+            {
+                "comp_millis": 8876.024902, 
+                "id": 2, 
+                "sync_millis": 38.140381
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 2
+    }, 
+    {
+        "exec_e": 5.725, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 5363.759766
+            }, 
+            {
+                "comp_millis": 5363.681641, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 5363.695801, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 5313.748291, 
+                "id": 3, 
+                "sync_millis": 44.55542
+            }, 
+            {
+                "comp_millis": 5323.108398, 
+                "id": 5, 
+                "sync_millis": 35.405762
+            }, 
+            {
+                "comp_millis": 5315.369873, 
+                "id": 4, 
+                "sync_millis": 43.004883
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 3
+    }, 
+    {
+        "exec_e": 4.226, 
+        "exec_o": [
+            {
+                "comp_millis": 3847.614014, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 3847.5979, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 3847.625244
+            }, 
+            {
+                "comp_millis": 3794.652344, 
+                "id": 7, 
+                "sync_millis": 46.819336
+            }, 
+            {
+                "comp_millis": 3786.695312, 
+                "id": 5, 
+                "sync_millis": 54.724365
+            }, 
+            {
+                "comp_millis": 3789.004883, 
+                "id": 4, 
+                "sync_millis": 52.391113
+            }, 
+            {
+                "comp_millis": 3793.843506, 
+                "id": 6, 
+                "sync_millis": 47.646484
+            }, 
+            {
+                "comp_millis": 3850.012939, 
+                "id": 2, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 4
+    }, 
+    {
+        "exec_e": 3.368, 
+        "exec_o": [
+            {
+                "comp_millis": 2996.229004, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2996.241699, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 2996.282715
+            }, 
+            {
+                "comp_millis": 2942.711426, 
+                "id": 5, 
+                "sync_millis": 47.761719
+            }, 
+            {
+                "comp_millis": 2937.117432, 
+                "id": 7, 
+                "sync_millis": 53.449707
+            }, 
+            {
+                "comp_millis": 2951.974609, 
+                "id": 8, 
+                "sync_millis": 38.554688
+            }, 
+            {
+                "comp_millis": 2946.94458, 
+                "id": 9, 
+                "sync_millis": 43.575928
+            }, 
+            {
+                "comp_millis": 2956.594727, 
+                "id": 6, 
+                "sync_millis": 33.958984
+            }, 
+            {
+                "comp_millis": 2998.235352, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 3000.289795, 
+                "id": 4, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 5
+    }, 
+    {
+        "exec_e": 2.854, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 2459.634766
+            }, 
+            {
+                "comp_millis": 2405.263184, 
+                "id": 10, 
+                "sync_millis": 48.485352
+            }, 
+            {
+                "comp_millis": 2401.776855, 
+                "id": 11, 
+                "sync_millis": 51.82373
+            }, 
+            {
+                "comp_millis": 2459.583008, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2412.666992, 
+                "id": 9, 
+                "sync_millis": 41.024902
+            }, 
+            {
+                "comp_millis": 2404.605713, 
+                "id": 6, 
+                "sync_millis": 48.93335
+            }, 
+            {
+                "comp_millis": 2459.564941, 
+                "id": 5, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2407.759521, 
+                "id": 7, 
+                "sync_millis": 45.915039
+            }, 
+            {
+                "comp_millis": 2414.761963, 
+                "id": 8, 
+                "sync_millis": 38.932129
+            }, 
+            {
+                "comp_millis": 2468.203613, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2468.340332, 
+                "id": 4, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2476.726074, 
+                "id": 3, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 6
+    }, 
+    {
+        "exec_e": 2.473, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 2084.11499
+            }, 
+            {
+                "comp_millis": 2084.079102, 
+                "id": 6, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2084.173096, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2047.774902, 
+                "id": 10, 
+                "sync_millis": 30.014893
+            }, 
+            {
+                "comp_millis": 2029.601074, 
+                "id": 11, 
+                "sync_millis": 48.131592
+            }, 
+            {
+                "comp_millis": 2030.461182, 
+                "id": 13, 
+                "sync_millis": 47.235596
+            }, 
+            {
+                "comp_millis": 2043.783691, 
+                "id": 12, 
+                "sync_millis": 33.930908
+            }, 
+            {
+                "comp_millis": 2029.417725, 
+                "id": 9, 
+                "sync_millis": 48.365723
+            }, 
+            {
+                "comp_millis": 2048.390381, 
+                "id": 8, 
+                "sync_millis": 29.384766
+            }, 
+            {
+                "comp_millis": 2024.646729, 
+                "id": 7, 
+                "sync_millis": 53.109131
+            }, 
+            {
+                "comp_millis": 2085.000977, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2085.582275, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2094.946289, 
+                "id": 5, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2100.498291, 
+                "id": 4, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 7
+    }, 
+    {
+        "exec_e": 2.208, 
+        "exec_o": [
+            {
+                "comp_millis": 1811.951172, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1811.982178
+            }, 
+            {
+                "comp_millis": 1811.933594, 
+                "id": 6, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1762.043213, 
+                "id": 13, 
+                "sync_millis": 43.293457
+            }, 
+            {
+                "comp_millis": 1760.606201, 
+                "id": 14, 
+                "sync_millis": 44.850342
+            }, 
+            {
+                "comp_millis": 1758.525635, 
+                "id": 10, 
+                "sync_millis": 46.91748
+            }, 
+            {
+                "comp_millis": 1759.556152, 
+                "id": 12, 
+                "sync_millis": 45.831787
+            }, 
+            {
+                "comp_millis": 1764.558838, 
+                "id": 9, 
+                "sync_millis": 40.860352
+            }, 
+            {
+                "comp_millis": 1764.409424, 
+                "id": 11, 
+                "sync_millis": 40.986572
+            }, 
+            {
+                "comp_millis": 1760.827393, 
+                "id": 8, 
+                "sync_millis": 44.571777
+            }, 
+            {
+                "comp_millis": 1763.253662, 
+                "id": 15, 
+                "sync_millis": 42.111816
+            }, 
+            {
+                "comp_millis": 1820.29126, 
+                "id": 4, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1821.483398, 
+                "id": 7, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1823.088867, 
+                "id": 5, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1825.062012, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1825.825928, 
+                "id": 1, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 8
+    }, 
+    {
+        "exec_e": 1.983, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1601.962402
+            }, 
+            {
+                "comp_millis": 1601.92041, 
+                "id": 7, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1549.930176, 
+                "id": 9, 
+                "sync_millis": 45.911377
+            }, 
+            {
+                "comp_millis": 1563.050781, 
+                "id": 12, 
+                "sync_millis": 32.679443
+            }, 
+            {
+                "comp_millis": 1557.994385, 
+                "id": 16, 
+                "sync_millis": 37.688477
+            }, 
+            {
+                "comp_millis": 1548.57373, 
+                "id": 11, 
+                "sync_millis": 47.041992
+            }, 
+            {
+                "comp_millis": 1550.98877, 
+                "id": 13, 
+                "sync_millis": 44.611328
+            }, 
+            {
+                "comp_millis": 1547.341309, 
+                "id": 17, 
+                "sync_millis": 48.294678
+            }, 
+            {
+                "comp_millis": 1565.901367, 
+                "id": 14, 
+                "sync_millis": 29.857422
+            }, 
+            {
+                "comp_millis": 1561.577637, 
+                "id": 10, 
+                "sync_millis": 34.135742
+            }, 
+            {
+                "comp_millis": 1551.69043, 
+                "id": 15, 
+                "sync_millis": 43.92749
+            }, 
+            {
+                "comp_millis": 1602.92749, 
+                "id": 8, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1604.703857, 
+                "id": 6, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1608.276123, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1611.845703, 
+                "id": 5, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1613.665771, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1614.363281, 
+                "id": 4, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1616.220459, 
+                "id": 1, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 9
+    }, 
+    {
+        "exec_e": 1.831, 
+        "exec_o": [
+            {
+                "comp_millis": 1436.304199, 
+                "id": 9, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1436.371094
+            }, 
+            {
+                "comp_millis": 1436.292236, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1386.510986, 
+                "id": 17, 
+                "sync_millis": 43.618164
+            }, 
+            {
+                "comp_millis": 1385.966064, 
+                "id": 13, 
+                "sync_millis": 44.110107
+            }, 
+            {
+                "comp_millis": 1390.067871, 
+                "id": 15, 
+                "sync_millis": 39.94043
+            }, 
+            {
+                "comp_millis": 1389.077148, 
+                "id": 11, 
+                "sync_millis": 40.98877
+            }, 
+            {
+                "comp_millis": 1385.445801, 
+                "id": 10, 
+                "sync_millis": 44.717041
+            }, 
+            {
+                "comp_millis": 1436.60791, 
+                "id": 6, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1392.907471, 
+                "id": 19, 
+                "sync_millis": 37.180176
+            }, 
+            {
+                "comp_millis": 1385.648926, 
+                "id": 12, 
+                "sync_millis": 44.459473
+            }, 
+            {
+                "comp_millis": 1384.380371, 
+                "id": 14, 
+                "sync_millis": 45.658203
+            }, 
+            {
+                "comp_millis": 1381.525391, 
+                "id": 16, 
+                "sync_millis": 48.573975
+            }, 
+            {
+                "comp_millis": 1382.299561, 
+                "id": 18, 
+                "sync_millis": 47.80835
+            }, 
+            {
+                "comp_millis": 1447.682373, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1450.169678, 
+                "id": 7, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1450.430176, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1454.530273, 
+                "id": 5, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1456.054932, 
+                "id": 8, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1457.505127, 
+                "id": 4, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 10
+    }, 
+    {
+        "exec_e": 1.701, 
+        "exec_o": [
+            {
+                "comp_millis": 1310.283691, 
+                "id": 10, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1310.319824
+            }, 
+            {
+                "comp_millis": 1265.938477, 
+                "id": 20, 
+                "sync_millis": 35.661865
+            }, 
+            {
+                "comp_millis": 1250.902344, 
+                "id": 13, 
+                "sync_millis": 50.514404
+            }, 
+            {
+                "comp_millis": 1263.095215, 
+                "id": 14, 
+                "sync_millis": 38.394775
+            }, 
+            {
+                "comp_millis": 1262.06665, 
+                "id": 12, 
+                "sync_millis": 39.458496
+            }, 
+            {
+                "comp_millis": 1249.873047, 
+                "id": 11, 
+                "sync_millis": 51.827148
+            }, 
+            {
+                "comp_millis": 1250.030273, 
+                "id": 21, 
+                "sync_millis": 51.544434
+            }, 
+            {
+                "comp_millis": 1249.729248, 
+                "id": 19, 
+                "sync_millis": 51.733398
+            }, 
+            {
+                "comp_millis": 1254.451416, 
+                "id": 15, 
+                "sync_millis": 47.02832
+            }, 
+            {
+                "comp_millis": 1266.549805, 
+                "id": 18, 
+                "sync_millis": 35.003174
+            }, 
+            {
+                "comp_millis": 1254.591064, 
+                "id": 17, 
+                "sync_millis": 46.791748
+            }, 
+            {
+                "comp_millis": 1266.531738, 
+                "id": 16, 
+                "sync_millis": 35.04541
+            }, 
+            {
+                "comp_millis": 1314.701172, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1315.544678, 
+                "id": 6, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1315.638428, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1318.960693, 
+                "id": 8, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1319.719727, 
+                "id": 9, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1323.915039, 
+                "id": 4, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1324.355957, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1329.838867, 
+                "id": 5, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1333.315186, 
+                "id": 7, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 11
+    }, 
+    {
+        "exec_e": 1.588, 
+        "exec_o": [
+            {
+                "comp_millis": 1195.108398, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1195.134277
+            }, 
+            {
+                "comp_millis": 1145.42749, 
+                "id": 16, 
+                "sync_millis": 41.816895
+            }, 
+            {
+                "comp_millis": 1145.265625, 
+                "id": 23, 
+                "sync_millis": 42.096436
+            }, 
+            {
+                "comp_millis": 1138.942383, 
+                "id": 17, 
+                "sync_millis": 48.390381
+            }, 
+            {
+                "comp_millis": 1142.994141, 
+                "id": 14, 
+                "sync_millis": 44.265137
+            }, 
+            {
+                "comp_millis": 1148.08374, 
+                "id": 21, 
+                "sync_millis": 39.20752
+            }, 
+            {
+                "comp_millis": 1142.998779, 
+                "id": 18, 
+                "sync_millis": 44.3479
+            }, 
+            {
+                "comp_millis": 1145.625, 
+                "id": 19, 
+                "sync_millis": 41.612793
+            }, 
+            {
+                "comp_millis": 1140.186768, 
+                "id": 12, 
+                "sync_millis": 47.497559
+            }, 
+            {
+                "comp_millis": 1146.20874, 
+                "id": 22, 
+                "sync_millis": 41.100342
+            }, 
+            {
+                "comp_millis": 1147.488525, 
+                "id": 15, 
+                "sync_millis": 39.922852
+            }, 
+            {
+                "comp_millis": 1144.741699, 
+                "id": 20, 
+                "sync_millis": 42.574707
+            }, 
+            {
+                "comp_millis": 1142.112305, 
+                "id": 13, 
+                "sync_millis": 45.286865
+            }, 
+            {
+                "comp_millis": 1202.834229, 
+                "id": 8, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1203.81958, 
+                "id": 9, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1205.751953, 
+                "id": 11, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1209.863525, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1212.429199, 
+                "id": 10, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1212.998535, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1218.19043, 
+                "id": 6, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1219.257568, 
+                "id": 5, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1219.873291, 
+                "id": 7, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1220.53125, 
+                "id": 4, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 2, 
+        "nthreads": 12
+    }, 
+    {
+        "exec_e": 13.918, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 13308.862305
+            }, 
+            {
+                "comp_millis": 13302.211426, 
+                "id": 2, 
+                "sync_millis": 0.400879
+            }, 
+            {
+                "comp_millis": 13302.531738, 
+                "id": 1, 
+                "sync_millis": 0.374268
+            }
+        ], 
+        "nnodes": 3, 
+        "nthreads": 1
+    }, 
+    {
+        "exec_e": 5.742, 
+        "exec_o": [
+            {
+                "comp_millis": 5363.593018, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 5363.626709
+            }, 
+            {
+                "comp_millis": 5320.983643, 
+                "id": 3, 
+                "sync_millis": 37.579102
+            }, 
+            {
+                "comp_millis": 5332.220947, 
+                "id": 2, 
+                "sync_millis": 26.23999
+            }, 
+            {
+                "comp_millis": 5321.138184, 
+                "id": 5, 
+                "sync_millis": 37.43457
+            }, 
+            {
+                "comp_millis": 5331.670898, 
+                "id": 4, 
+                "sync_millis": 26.776611
+            }
+        ], 
+        "nnodes": 3, 
+        "nthreads": 2
+    }, 
+    {
+        "exec_e": 3.74, 
+        "exec_o": [
+            {
+                "comp_millis": 3363.758301, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 3363.743164, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 3363.814697
+            }, 
+            {
+                "comp_millis": 3337.478271, 
+                "id": 7, 
+                "sync_millis": 21.787109
+            }, 
+            {
+                "comp_millis": 3328.210449, 
+                "id": 6, 
+                "sync_millis": 30.985352
+            }, 
+            {
+                "comp_millis": 3328.204102, 
+                "id": 8, 
+                "sync_millis": 31.186279
+            }, 
+            {
+                "comp_millis": 3328.378906, 
+                "id": 5, 
+                "sync_millis": 30.513428
+            }, 
+            {
+                "comp_millis": 3335.965088, 
+                "id": 4, 
+                "sync_millis": 22.876709
+            }, 
+            {
+                "comp_millis": 3333.21167, 
+                "id": 3, 
+                "sync_millis": 25.758301
+            }
+        ], 
+        "nnodes": 3, 
+        "nthreads": 3
+    }, 
+    {
+        "exec_e": 2.847, 
+        "exec_o": [
+            {
+                "comp_millis": 2455.993164, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 2456.063721
+            }, 
+            {
+                "comp_millis": 2456.008789, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2420.158203, 
+                "id": 11, 
+                "sync_millis": 31.444336
+            }, 
+            {
+                "comp_millis": 2421.563965, 
+                "id": 9, 
+                "sync_millis": 30.03418
+            }, 
+            {
+                "comp_millis": 2418.066162, 
+                "id": 8, 
+                "sync_millis": 33.439941
+            }, 
+            {
+                "comp_millis": 2419.239258, 
+                "id": 5, 
+                "sync_millis": 32.54834
+            }, 
+            {
+                "comp_millis": 2418.899414, 
+                "id": 6, 
+                "sync_millis": 32.908203
+            }, 
+            {
+                "comp_millis": 2418.140625, 
+                "id": 10, 
+                "sync_millis": 33.556396
+            }, 
+            {
+                "comp_millis": 2419.510254, 
+                "id": 4, 
+                "sync_millis": 32.332275
+            }, 
+            {
+                "comp_millis": 2417.808105, 
+                "id": 7, 
+                "sync_millis": 33.994873
+            }, 
+            {
+                "comp_millis": 2474.889404, 
+                "id": 3, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 3, 
+        "nthreads": 4
+    }, 
+    {
+        "exec_e": 2.322, 
+        "exec_o": [
+            {
+                "comp_millis": 1935.736816, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1935.812256
+            }, 
+            {
+                "comp_millis": 1896.435791, 
+                "id": 5, 
+                "sync_millis": 34.856201
+            }, 
+            {
+                "comp_millis": 1898.198242, 
+                "id": 7, 
+                "sync_millis": 33.017578
+            }, 
+            {
+                "comp_millis": 1896.229492, 
+                "id": 9, 
+                "sync_millis": 35.018311
+            }, 
+            {
+                "comp_millis": 1909.766113, 
+                "id": 8, 
+                "sync_millis": 21.570068
+            }, 
+            {
+                "comp_millis": 1904.749756, 
+                "id": 6, 
+                "sync_millis": 26.52417
+            }, 
+            {
+                "comp_millis": 1897.802246, 
+                "id": 12, 
+                "sync_millis": 33.868652
+            }, 
+            {
+                "comp_millis": 1907.824219, 
+                "id": 11, 
+                "sync_millis": 23.895752
+            }, 
+            {
+                "comp_millis": 1907.226318, 
+                "id": 13, 
+                "sync_millis": 24.473389
+            }, 
+            {
+                "comp_millis": 1899.161377, 
+                "id": 10, 
+                "sync_millis": 32.496094
+            }, 
+            {
+                "comp_millis": 1900.468994, 
+                "id": 14, 
+                "sync_millis": 31.196533
+            }, 
+            {
+                "comp_millis": 1938.187256, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1944.502441, 
+                "id": 4, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1949.285156, 
+                "id": 2, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 3, 
+        "nthreads": 5
+    }, 
+    {
+        "exec_e": 1.99, 
+        "exec_o": [
+            {
+                "comp_millis": 1606.251465, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1606.255615
+            }, 
+            {
+                "comp_millis": 1570.124023, 
+                "id": 15, 
+                "sync_millis": 30.637939
+            }, 
+            {
+                "comp_millis": 1567.790039, 
+                "id": 12, 
+                "sync_millis": 33.036865
+            }, 
+            {
+                "comp_millis": 1569.618896, 
+                "id": 11, 
+                "sync_millis": 31.18335
+            }, 
+            {
+                "comp_millis": 1572.841797, 
+                "id": 7, 
+                "sync_millis": 27.971436
+            }, 
+            {
+                "comp_millis": 1568.614502, 
+                "id": 10, 
+                "sync_millis": 32.146484
+            }, 
+            {
+                "comp_millis": 1568.761963, 
+                "id": 8, 
+                "sync_millis": 32.040039
+            }, 
+            {
+                "comp_millis": 1566.193604, 
+                "id": 6, 
+                "sync_millis": 34.741455
+            }, 
+            {
+                "comp_millis": 1568.778564, 
+                "id": 9, 
+                "sync_millis": 32.043457
+            }, 
+            {
+                "comp_millis": 1606.239746, 
+                "id": 4, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1567.411865, 
+                "id": 13, 
+                "sync_millis": 33.325195
+            }, 
+            {
+                "comp_millis": 1567.460938, 
+                "id": 17, 
+                "sync_millis": 33.272705
+            }, 
+            {
+                "comp_millis": 1567.9104, 
+                "id": 16, 
+                "sync_millis": 32.862305
+            }, 
+            {
+                "comp_millis": 1565.739746, 
+                "id": 14, 
+                "sync_millis": 35.054932
+            }, 
+            {
+                "comp_millis": 1606.807617, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1612.319336, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1615.342773, 
+                "id": 5, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 3, 
+        "nthreads": 6
+    }, 
+    {
+        "exec_e": 1.769, 
+        "exec_o": [
+            {
+                "comp_millis": 1363.903564, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1363.979736
+            }, 
+            {
+                "comp_millis": 1325.887939, 
+                "id": 20, 
+                "sync_millis": 33.569336
+            }, 
+            {
+                "comp_millis": 1333.622314, 
+                "id": 19, 
+                "sync_millis": 25.878662
+            }, 
+            {
+                "comp_millis": 1322.155762, 
+                "id": 18, 
+                "sync_millis": 37.31665
+            }, 
+            {
+                "comp_millis": 1323.987793, 
+                "id": 14, 
+                "sync_millis": 35.431396
+            }, 
+            {
+                "comp_millis": 1328.008545, 
+                "id": 16, 
+                "sync_millis": 31.484863
+            }, 
+            {
+                "comp_millis": 1327.038818, 
+                "id": 7, 
+                "sync_millis": 32.187744
+            }, 
+            {
+                "comp_millis": 1334.033203, 
+                "id": 12, 
+                "sync_millis": 25.145996
+            }, 
+            {
+                "comp_millis": 1327.202148, 
+                "id": 11, 
+                "sync_millis": 31.922607
+            }, 
+            {
+                "comp_millis": 1326.520508, 
+                "id": 9, 
+                "sync_millis": 32.65332
+            }, 
+            {
+                "comp_millis": 1325.935059, 
+                "id": 13, 
+                "sync_millis": 33.168457
+            }, 
+            {
+                "comp_millis": 1338.547363, 
+                "id": 17, 
+                "sync_millis": 20.943604
+            }, 
+            {
+                "comp_millis": 1333.44873, 
+                "id": 10, 
+                "sync_millis": 25.751465
+            }, 
+            {
+                "comp_millis": 1333.134277, 
+                "id": 8, 
+                "sync_millis": 26.109863
+            }, 
+            {
+                "comp_millis": 1330.921143, 
+                "id": 15, 
+                "sync_millis": 28.589111
+            }, 
+            {
+                "comp_millis": 1364.885498, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1369.861816, 
+                "id": 5, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1380.459473, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1388.620605, 
+                "id": 6, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1389.461914, 
+                "id": 4, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 3, 
+        "nthreads": 7
+    }, 
+    {
+        "exec_e": 1.598, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1191.729492
+            }, 
+            {
+                "comp_millis": 1155.124268, 
+                "id": 17, 
+                "sync_millis": 30.712158
+            }, 
+            {
+                "comp_millis": 1157.180664, 
+                "id": 21, 
+                "sync_millis": 28.640869
+            }, 
+            {
+                "comp_millis": 1158.58667, 
+                "id": 15, 
+                "sync_millis": 27.106689
+            }, 
+            {
+                "comp_millis": 1154.123779, 
+                "id": 10, 
+                "sync_millis": 31.517822
+            }, 
+            {
+                "comp_millis": 1155.451904, 
+                "id": 11, 
+                "sync_millis": 30.204346
+            }, 
+            {
+                "comp_millis": 1152.725098, 
+                "id": 12, 
+                "sync_millis": 32.90625
+            }, 
+            {
+                "comp_millis": 1154.605225, 
+                "id": 8, 
+                "sync_millis": 31.049072
+            }, 
+            {
+                "comp_millis": 1152.864258, 
+                "id": 13, 
+                "sync_millis": 32.780273
+            }, 
+            {
+                "comp_millis": 1155.04541, 
+                "id": 9, 
+                "sync_millis": 30.529053
+            }, 
+            {
+                "comp_millis": 1157.508545, 
+                "id": 18, 
+                "sync_millis": 28.36499
+            }, 
+            {
+                "comp_millis": 1154.566162, 
+                "id": 14, 
+                "sync_millis": 31.096191
+            }, 
+            {
+                "comp_millis": 1154.298584, 
+                "id": 19, 
+                "sync_millis": 31.486572
+            }, 
+            {
+                "comp_millis": 1155.189453, 
+                "id": 23, 
+                "sync_millis": 30.651367
+            }, 
+            {
+                "comp_millis": 1156.562988, 
+                "id": 22, 
+                "sync_millis": 29.328857
+            }, 
+            {
+                "comp_millis": 1157.005859, 
+                "id": 20, 
+                "sync_millis": 28.902832
+            }, 
+            {
+                "comp_millis": 1146.423096, 
+                "id": 16, 
+                "sync_millis": 39.261963
+            }, 
+            {
+                "comp_millis": 1195.106934, 
+                "id": 7, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1203.586914, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1214.484131, 
+                "id": 6, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1216.435059, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1218.692871, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1219.384766, 
+                "id": 4, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1222.344238, 
+                "id": 5, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 3, 
+        "nthreads": 8
+    }, 
+    {
+        "exec_e": 9.493, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 8872.418701
+            }, 
+            {
+                "comp_millis": 8868.110596, 
+                "id": 2, 
+                "sync_millis": 0.276611
+            }, 
+            {
+                "comp_millis": 8867.706543, 
+                "id": 1, 
+                "sync_millis": 0.247803
+            }, 
+            {
+                "comp_millis": 8868.340576, 
+                "id": 3, 
+                "sync_millis": 0.270264
+            }
+        ], 
+        "nnodes": 4, 
+        "nthreads": 1
+    }, 
+    {
+        "exec_e": 4.197, 
+        "exec_o": [
+            {
+                "comp_millis": 3832.25, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 3832.262695
+            }, 
+            {
+                "comp_millis": 3809.336182, 
+                "id": 7, 
+                "sync_millis": 19.358154
+            }, 
+            {
+                "comp_millis": 3801.603271, 
+                "id": 6, 
+                "sync_millis": 27.036377
+            }, 
+            {
+                "comp_millis": 3803.417236, 
+                "id": 4, 
+                "sync_millis": 25.623047
+            }, 
+            {
+                "comp_millis": 3810.068848, 
+                "id": 5, 
+                "sync_millis": 19.005615
+            }, 
+            {
+                "comp_millis": 3799.710205, 
+                "id": 3, 
+                "sync_millis": 28.885498
+            }, 
+            {
+                "comp_millis": 3811.655762, 
+                "id": 2, 
+                "sync_millis": 16.864258
+            }
+        ], 
+        "nnodes": 4, 
+        "nthreads": 2
+    }, 
+    {
+        "exec_e": 2.825, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 2451.422363
+            }, 
+            {
+                "comp_millis": 2451.338623, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 2424.252197, 
+                "id": 9, 
+                "sync_millis": 22.999023
+            }, 
+            {
+                "comp_millis": 2427.285156, 
+                "id": 11, 
+                "sync_millis": 20.134766
+            }, 
+            {
+                "comp_millis": 2428.85791, 
+                "id": 10, 
+                "sync_millis": 18.459473
+            }, 
+            {
+                "comp_millis": 2424.012939, 
+                "id": 5, 
+                "sync_millis": 23.191162
+            }, 
+            {
+                "comp_millis": 2426.750488, 
+                "id": 3, 
+                "sync_millis": 20.456543
+            }, 
+            {
+                "comp_millis": 2431.740479, 
+                "id": 4, 
+                "sync_millis": 15.443604
+            }, 
+            {
+                "comp_millis": 2428.223145, 
+                "id": 8, 
+                "sync_millis": 19.141602
+            }, 
+            {
+                "comp_millis": 2428.116943, 
+                "id": 7, 
+                "sync_millis": 19.237061
+            }, 
+            {
+                "comp_millis": 2424.418701, 
+                "id": 6, 
+                "sync_millis": 22.963135
+            }, 
+            {
+                "comp_millis": 2452.36792, 
+                "id": 1, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 4, 
+        "nthreads": 3
+    }, 
+    {
+        "exec_e": 2.201, 
+        "exec_o": [
+            {
+                "comp_millis": 1777.506592, 
+                "id": 10, 
+                "sync_millis": 24.575439
+            }, 
+            {
+                "comp_millis": 1778.363525, 
+                "id": 8, 
+                "sync_millis": 23.612549
+            }, 
+            {
+                "comp_millis": 1777.092773, 
+                "id": 9, 
+                "sync_millis": 24.924805
+            }, 
+            {
+                "comp_millis": 1777.835449, 
+                "id": 11, 
+                "sync_millis": 24.160156
+            }, 
+            {
+                "comp_millis": 1779.386963, 
+                "id": 6, 
+                "sync_millis": 22.360107
+            }, 
+            {
+                "comp_millis": 1774.583984, 
+                "id": 4, 
+                "sync_millis": 27.120117
+            }, 
+            {
+                "comp_millis": 1777.028076, 
+                "id": 7, 
+                "sync_millis": 24.791016
+            }, 
+            {
+                "comp_millis": 1774.376709, 
+                "id": 5, 
+                "sync_millis": 27.462646
+            }, 
+            {
+                "comp_millis": 1779.734863, 
+                "id": 15, 
+                "sync_millis": 22.297119
+            }, 
+            {
+                "comp_millis": 1775.712646, 
+                "id": 13, 
+                "sync_millis": 26.317871
+            }, 
+            {
+                "comp_millis": 1780.956543, 
+                "id": 14, 
+                "sync_millis": 21.095947
+            }, 
+            {
+                "comp_millis": 1771.015869, 
+                "id": 12, 
+                "sync_millis": 31.075195
+            }, 
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1806.371826
+            }, 
+            {
+                "comp_millis": 1807.769775, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1820.477051, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1826.431641, 
+                "id": 3, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 4, 
+        "nthreads": 4
+    }, 
+    {
+        "exec_e": 1.825, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1431.27417
+            }, 
+            {
+                "comp_millis": 1402.049561, 
+                "id": 5, 
+                "sync_millis": 24.24292
+            }, 
+            {
+                "comp_millis": 1409.113281, 
+                "id": 6, 
+                "sync_millis": 17.222412
+            }, 
+            {
+                "comp_millis": 1406.815674, 
+                "id": 13, 
+                "sync_millis": 19.92334
+            }, 
+            {
+                "comp_millis": 1407.564697, 
+                "id": 11, 
+                "sync_millis": 19.155273
+            }, 
+            {
+                "comp_millis": 1398.799561, 
+                "id": 12, 
+                "sync_millis": 27.882568
+            }, 
+            {
+                "comp_millis": 1398.172119, 
+                "id": 15, 
+                "sync_millis": 28.776123
+            }, 
+            {
+                "comp_millis": 1407.14624, 
+                "id": 8, 
+                "sync_millis": 19.169434
+            }, 
+            {
+                "comp_millis": 1401.116943, 
+                "id": 14, 
+                "sync_millis": 25.557861
+            }, 
+            {
+                "comp_millis": 1398.987549, 
+                "id": 19, 
+                "sync_millis": 27.984131
+            }, 
+            {
+                "comp_millis": 1398.761963, 
+                "id": 9, 
+                "sync_millis": 27.516846
+            }, 
+            {
+                "comp_millis": 1400.677246, 
+                "id": 10, 
+                "sync_millis": 25.995117
+            }, 
+            {
+                "comp_millis": 1403.870117, 
+                "id": 17, 
+                "sync_millis": 23.091309
+            }, 
+            {
+                "comp_millis": 1399.073242, 
+                "id": 7, 
+                "sync_millis": 27.210205
+            }, 
+            {
+                "comp_millis": 1409.827148, 
+                "id": 16, 
+                "sync_millis": 17.159424
+            }, 
+            {
+                "comp_millis": 1408.164795, 
+                "id": 18, 
+                "sync_millis": 18.846191
+            }, 
+            {
+                "comp_millis": 1443.046875, 
+                "id": 4, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1447.858643, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1449.300293, 
+                "id": 3, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1450.375977, 
+                "id": 2, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 4, 
+        "nthreads": 5
+    }, 
+    {
+        "exec_e": 1.591, 
+        "exec_o": [
+            {
+                "comp_millis": 0, 
+                "id": 0, 
+                "sync_millis": 1186.375
+            }, 
+            {
+                "comp_millis": 1161.724609, 
+                "id": 23, 
+                "sync_millis": 20.003906
+            }, 
+            {
+                "comp_millis": 1156.028809, 
+                "id": 19, 
+                "sync_millis": 25.70874
+            }, 
+            {
+                "comp_millis": 1159.921875, 
+                "id": 14, 
+                "sync_millis": 21.78833
+            }, 
+            {
+                "comp_millis": 1156.597168, 
+                "id": 17, 
+                "sync_millis": 25.106934
+            }, 
+            {
+                "comp_millis": 1155.634521, 
+                "id": 15, 
+                "sync_millis": 26.054688
+            }, 
+            {
+                "comp_millis": 1154.26123, 
+                "id": 11, 
+                "sync_millis": 27.504395
+            }, 
+            {
+                "comp_millis": 1156.485107, 
+                "id": 7, 
+                "sync_millis": 25.310303
+            }, 
+            {
+                "comp_millis": 1155.219238, 
+                "id": 6, 
+                "sync_millis": 26.546875
+            }, 
+            {
+                "comp_millis": 1156.44873, 
+                "id": 8, 
+                "sync_millis": 25.357422
+            }, 
+            {
+                "comp_millis": 1159.626953, 
+                "id": 20, 
+                "sync_millis": 22.134277
+            }, 
+            {
+                "comp_millis": 1156.919678, 
+                "id": 13, 
+                "sync_millis": 24.787109
+            }, 
+            {
+                "comp_millis": 1158.133057, 
+                "id": 10, 
+                "sync_millis": 23.681885
+            }, 
+            {
+                "comp_millis": 1154.561768, 
+                "id": 9, 
+                "sync_millis": 27.232422
+            }, 
+            {
+                "comp_millis": 1156.986572, 
+                "id": 22, 
+                "sync_millis": 24.75415
+            }, 
+            {
+                "comp_millis": 1157.673096, 
+                "id": 21, 
+                "sync_millis": 24.116699
+            }, 
+            {
+                "comp_millis": 1153.106445, 
+                "id": 12, 
+                "sync_millis": 28.62085
+            }, 
+            {
+                "comp_millis": 1156.148926, 
+                "id": 18, 
+                "sync_millis": 25.632324
+            }, 
+            {
+                "comp_millis": 1159.241699, 
+                "id": 16, 
+                "sync_millis": 22.473633
+            }, 
+            {
+                "comp_millis": 1195.49292, 
+                "id": 1, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1211.867188, 
+                "id": 4, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1214.094238, 
+                "id": 2, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1216.352295, 
+                "id": 5, 
+                "sync_millis": 0
+            }, 
+            {
+                "comp_millis": 1217.24707, 
+                "id": 3, 
+                "sync_millis": 0
+            }
+        ], 
+        "nnodes": 4, 
+        "nthreads": 6
+    }
+]
