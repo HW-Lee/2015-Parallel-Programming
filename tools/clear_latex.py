@@ -6,7 +6,8 @@ file_list = [
 	"*.fdb*",
 	"*.log",
 	"*.out",
-	"*.synctex*"
+	"*.synctex*",
+    "*.fls"
 ]
 
 map( lambda x: os.system( "rm " + x ), file_list )
