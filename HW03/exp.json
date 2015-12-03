@@ -354,6 +354,78 @@
             "sync_millis": 0
         }
     ],
+    "MPI_Pthread_dynamic": [
+        {
+            "id": 1,
+            "comp_millis": 2658.074463,
+            "sync_millis": 7.269043,
+            "comm_millis": 27.128174,
+            "num_cols": 76
+        },
+        {
+            "id": 2,
+            "comp_millis": 2656.314209,
+            "sync_millis": 7.270020,
+            "comm_millis": 28.861816,
+            "num_cols": 101
+        },
+        {
+            "id": 3,
+            "comp_millis": 2656.745850,
+            "sync_millis": 7.258057,
+            "comm_millis": 28.455078,
+            "num_cols": 99
+        },
+        {
+            "id": 4,
+            "comp_millis": 2656.562500,
+            "sync_millis": 7.255615,
+            "comm_millis": 28.644043,
+            "num_cols": 94
+        },
+        {
+            "id": 6,
+            "comp_millis": 2656.346191,
+            "sync_millis": 7.245117,
+            "comm_millis": 28.859863,
+            "num_cols": 100
+        },
+        {
+            "id": 7,
+            "comp_millis": 2655.881348,
+            "sync_millis": 7.243896,
+            "comm_millis": 29.363037,
+            "num_cols": 105
+        },
+        {
+            "id": 8,
+            "comp_millis": 2662.885010,
+            "sync_millis": 3.223633,
+            "comm_millis": 26.353027,
+            "num_cols": 44
+        },
+        {
+            "id": 9,
+            "comp_millis": 2664.340088,
+            "sync_millis": 2.038086,
+            "comm_millis": 26.085205,
+            "num_cols": 44
+        },
+        {
+            "id": 5,
+            "comp_millis": 2665.912598,
+            "sync_millis": 0.104004,
+            "comm_millis": 26.469482,
+            "num_cols": 46
+        },
+        {
+            "id": 0,
+            "comp_millis": 2685.085693,
+            "sync_millis": 0.041260,
+            "comm_millis": 1.905762,
+            "num_cols": 91
+        }
+    ],
     "var_resources": {
         "MPI_static_elapsed": [
             26.964,
@@ -410,6 +482,20 @@
             2.691,
             2.446,
             2.252
+        ],
+        "MPI_Pthread_dynamic_elapsed": [
+            23.834,
+            13.907,
+            9.182,
+            6.894,
+            5.540,
+            4.658,
+            4.045,
+            3.580,
+            3.217,
+            2.962,
+            2.765,
+            2.597
         ]
     },
     "var_problemsize": {
