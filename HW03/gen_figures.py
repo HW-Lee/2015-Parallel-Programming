@@ -26,16 +26,18 @@ def main():
 
 
     print( "Generating threads_load figures..." )
-    gen_threads_load_figure( MPI_static_res_info, MPI_dynamic_res_info, MPI_command, "MPI" )
-    gen_threads_load_figure( OpenMP_static_res_info, OpenMP_dynamic_res_info, OpenMP_command, "OpenMP" )
-    gen_threads_load_figure( Hybrid_static_res_info, Hybrid_dynamic_res_info, Hybrid_command, "Hybrid" )
+    gen_threads_load_figure( MPI_static_res_info, MPI_dynamic_res_info, "static", "dyn", MPI_command, "MPI" )
+    gen_threads_load_figure( OpenMP_static_res_info, OpenMP_dynamic_res_info, "static", "dyn", OpenMP_command, "OpenMP" )
+    gen_threads_load_figure( Hybrid_static_res_info, Hybrid_dynamic_res_info, "static", "dyn", Hybrid_command, "Hybrid" )
+    gen_threads_load_figure( MPI_dynamic_res_info, data["MPI_Pthread_dynamic"], "org", "rfc", MPI_command, "MPI_dyn_rfact" )
 
     print( "Generating load_dist figures..." )
     gen_columns_load_figure( elapsed_static, "static" )
     gen_columns_load_figure( elapsed_dynamic, "dynamic" )
 
     print( "Generating speedup figure..." )
-    gen_speedup_figure( var_resources )
+    gen_speedup_figure( var_resources, [ "MPI_static", "MPI_dynamic", "OpenMP_static", "OpenMP_dynamic" ], [ "r", "g", "b", "m" ] )
+    gen_speedup_figure( var_resources, [ "MPI_dynamic", "MPI_Pthread_dynamic" ], [ "r", "g" ], "_refacator" )
 
     print( "Generating Scalability figure..." )
     gen_exec_figure( var_resources )
@@ -44,7 +46,7 @@ def main():
     print( "Generating execution time figure of multi-nodes..." )
     gen_multinodes_exec_figure( json.load(open("Hybrid_static_combinations.json")), json.load(open("Hybrid_dynamic_combinations.json")) )
 
-def gen_threads_load_figure( static, dynamic, command, name ):
+def gen_threads_load_figure( static, dynamic, static_label, dynamic_label, command, name ):
     width = 0.1
     x = np.array( map( lambda x: x["id"], static ) ) + 1
     comp = np.array( map( lambda x: x.get("comp_millis", 0), static ) ) # g
@@ -59,7 +61,7 @@ def gen_threads_load_figure( static, dynamic, command, name ):
     for i in range(len(rects)):
         rect = rects[i]
         h = rect.get_height() + offset[i]
-        pyplot.text( rect.get_x() + rect.get_width()/2., h, "static", ha="center", va="bottom" )
+        pyplot.text( rect.get_x() + rect.get_width()/2., h, static_label, ha="center", va="bottom" )
 
     pyplot.ylim(0, max(comp)*1.3)
 
@@ -76,7 +78,7 @@ def gen_threads_load_figure( static, dynamic, command, name ):
     for i in range(len(rects)):
         rect = rects[i]
         h = rect.get_height() + offset[i]
-        pyplot.text( rect.get_x() + rect.get_width()/2., h, "dyn", ha="center", va="bottom" )
+        pyplot.text( rect.get_x() + rect.get_width()/2., h, dynamic_label, ha="center", va="bottom" )
 
     pyplot.xticks( x, x )
 
@@ -112,9 +114,7 @@ def gen_columns_load_figure( data, name ):
     pyplot.savefig("./report/load_dist_" + name + ".png", transparent=True, bbox_inches="tight", pad_inches=0.1)
     pyplot.gcf().clear()
 
-def gen_speedup_figure( data ):
-    dim_array = [ "MPI_static", "MPI_dynamic", "OpenMP_static", "OpenMP_dynamic" ]
-    colors = [ "r", "g", "b", "m" ]
+def gen_speedup_figure( data, dim_array, colors, postfix="" ):
     h = map( lambda x: (x, np.array(data[x+"_elapsed"])), dim_array )
     h = dict( h )
 
@@ -131,7 +131,7 @@ def gen_speedup_figure( data ):
     pyplot.xlabel( "# of workers" )
     pyplot.ylabel( "speedup factor" )
     pyplot.gcf().set_size_inches(12, 9)
-    pyplot.savefig("./report/speedup.png", transparent=True, bbox_inches="tight", pad_inches=0.1)
+    pyplot.savefig("./report/speedup" + postfix + ".png", transparent=True, bbox_inches="tight", pad_inches=0.1)
     pyplot.gcf().clear()
 
 def gen_exec_figure( data ):
