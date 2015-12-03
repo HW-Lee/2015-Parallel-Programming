@@ -45,8 +45,8 @@ struct timespec ref_time;
  * Time
  *
  */
-void tic();
-double toc();
+void tic( struct timespec* ref_time );
+double toc( struct timespec* ref_time );
 
 
 double comp_millis = 0;
@@ -88,7 +88,7 @@ int main( int argc, char* argv[] ) {
 
 	if ( size == 1 ) {
 
-		tic();
+		tic( &ref_time );
 		complex z;
 		col_counter = width;
 		for (int i = 0; i < width * height; i++) {
@@ -99,7 +99,7 @@ int main( int argc, char* argv[] ) {
 
 			glob_buffer[i] = mandelbrot_iter(z);
 		}
-		comp_millis += toc();
+		comp_millis += toc( &ref_time );
 
 	} else {
 
@@ -123,7 +123,10 @@ int main( int argc, char* argv[] ) {
 			pthread_create( &master_thread, NULL, monitor_jobs, (void*) &p );
 
 			complex z;
-			tic();
+
+			struct timespec ref;
+
+			tic( &ref );
 			while (true) {
 				x = width - get_job();
 				if ( x >= height ) break;
@@ -136,7 +139,7 @@ int main( int argc, char* argv[] ) {
 					glob_buffer[ x * height + y ] = mandelbrot_iter(z);
 				}
 			}
-			comp_millis += toc();
+			comp_millis += toc( &ref );
 
 		} else {
 			
@@ -148,25 +151,25 @@ int main( int argc, char* argv[] ) {
 
 			complex z;
 			while (true) {
-				tic();
+				tic( &ref_time );
 				MPI_Recv( &x, 1, MPI_INT, master, MPI_ANY_TAG, MPI_COMM_WORLD, &status );
-				comm_millis += toc();
+				comm_millis += toc( &ref_time );
 
 				if ( status.MPI_TAG == TAG_TERMINATE ) break;
 
 				col_counter++;
-				tic();
+				tic( &ref_time );
 				for (int y = 0; y < height; y++) {
 					z.real = (real_max - real_min) * (double) x / width + real_min;
 					z.imag = (imag_max - imag_min) * (double) y / height + imag_min;
 
 					col_iters_send[y] = mandelbrot_iter(z);
 				}
-				comp_millis += toc();
+				comp_millis += toc( &ref_time );
 
-				tic();
+				tic( &ref_time );
 				MPI_Send( col_iters_send, height, MPI_INT, master, x, MPI_COMM_WORLD );
-				comm_millis += toc();
+				comm_millis += toc( &ref_time );
 			}
 
 		}
@@ -177,9 +180,9 @@ int main( int argc, char* argv[] ) {
 
 	}
 
-	tic();
+	tic( &ref_time );
 	MPI_Barrier( MPI_COMM_WORLD );
-	sync_millis += toc();
+	sync_millis += toc( &ref_time );
 
 	if ( rank == 0 && DRAW_RESULT ) {
 		display = XOpenDisplay(NULL);
@@ -212,7 +215,7 @@ int main( int argc, char* argv[] ) {
 
 	if ( rank == 0 ) free(glob_buffer);
 
-	printf( "{\n\t\"id\": %d,\n\t\"comp_millis\": %lf,\n\t\"sync_millis\": %lf,\n\t\"comm_millis\": %lf\n\t\"num_cols\": %d\n}\n", rank, comp_millis, sync_millis, comm_millis, col_counter );
+	printf( "{\n\t\"id\": %d,\n\t\"comp_millis\": %lf,\n\t\"sync_millis\": %lf,\n\t\"comm_millis\": %lf,\n\t\"num_cols\": %d\n},\n", rank, comp_millis, sync_millis, comm_millis, col_counter );
 
 	MPI_Barrier( MPI_COMM_WORLD );
     MPI_Finalize();
@@ -238,34 +241,34 @@ void* monitor_jobs( void* ptr ) {
 		colIdx_send = width - get_job();
 		int tag = ( colIdx_send < 0 ) ? TAG_TERMINATE : TAG_DOOPERATION;
 
-		tic();
+		tic( &ref_time );
 		MPI_Send( &colIdx_send, 1, MPI_INT, i, tag, MPI_COMM_WORLD );
-		comm_millis += toc();
+		comm_millis += toc( &ref_time );
 	}
 
 	while (true) {
 		MPI_Iprobe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status );
 
 		if ( flag ) {
-			sync_millis += toc();
+			// sync_millis += toc( &ref_time );
 
 			src = status.MPI_SOURCE;
 
-			tic();
+			tic( &ref_time );
 			MPI_Recv( &(glob_buffer[status.MPI_TAG * height]), height, MPI_INT, src, MPI_ANY_TAG, MPI_COMM_WORLD, &status );
 
 			colIdx_send = width - get_job();
 			if ( colIdx_send < width ) {
 				MPI_Send( &colIdx_send, 1, MPI_INT, src, TAG_DOOPERATION, MPI_COMM_WORLD );
-				comm_millis += toc();
+				comm_millis += toc( &ref_time );
 			} else {
 				MPI_Send( &colIdx_send, 1, MPI_INT, src, TAG_TERMINATE, MPI_COMM_WORLD );
-				comm_millis += toc();
+				comm_millis += toc( &ref_time );
 				num_termination_sent++;
 				if ( num_termination_sent == size-1 ) break;
 			}
 
-			tic();
+			// tic( &ref_time );
 		} else {
 			usleep(5);
 		}
@@ -321,12 +324,12 @@ double sigmoid( double v ) {
 	return 1 / (1 + pow(2, -v));
 }
 
-void tic() {
-	clock_gettime( CLOCK_REALTIME, &ref_time );
+void tic( struct timespec* ref_time ) {
+	clock_gettime( CLOCK_REALTIME, ref_time );
 }
 
-double toc() {
+double toc( struct timespec* ref_time ) {
 	struct timespec now;
 	clock_gettime( CLOCK_REALTIME, &now );
-	return (double) ( (now.tv_sec*1e3 + now.tv_nsec*1e-6) - (ref_time.tv_sec*1e3 + ref_time.tv_nsec*1e-6) );
+	return (double) ( (now.tv_sec*1e3 + now.tv_nsec*1e-6) - (ref_time->tv_sec*1e3 + ref_time->tv_nsec*1e-6) );
 }
