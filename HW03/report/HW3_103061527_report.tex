@@ -241,5 +241,24 @@ This project provides an practice to experience advantages and disadvantages of 
 
 Hybrid is used for compensating disadvantages and combining advantages of MPI and OpenMP: 1) reducing memory duplication with shared memory, 2) reducing communications, 3) increasing portability, 4) increasing scability for advanced systems.
 
+\section*{Additional Work: Dynamic MPI Implementation}
+\vspace{-20pt}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\vspace{5pt}
+
+In dynamic implementations, the most important thing is how to implement a master, and in the dynamic MPI implementation I directly assign a worker to be the master. However, it sacrifices a computing unit and then leads the speedup factor to be reversely propotional to only $N_{wks}-1$ instead of $N_{wks}$. In practice, the master is always idle for waiting and checking if any message has been sent and the computation power is wasted. To improve the situation, the way assigning a worker to be not only a master, but a worker is a good choice. Therefore, Pthread has been used. In this way, the refactored results have been shown below:
+
+\begin{SCfigure}[][ht]
+    \includegraphics[scale=.45]{./threads_load_MPI_dyn_rfact.png}
+    \vspace{-.5cm}
+    \caption{Loads figure of different dynamic MPI implementations: Choosing one worker to be both worker and master, the worker will launch an extra thread for managing jobs. This strategy will decrease the efficiency of communication but make the worker not always idle anymore, so the total results can be improved.}
+\end{SCfigure}
+
+\begin{SCfigure}[][ht]
+    \includegraphics[scale=.45]{./speedup_refactor.png}
+    \vspace{-.5cm}
+    \caption{Speedup factors between different dynamic MPI implementations: In this strategy, the results are closer to ideal results. However, it suffers from message passing as the number of workers increases.}
+\end{SCfigure}
+
 \end{CJK}
 \end{document}
