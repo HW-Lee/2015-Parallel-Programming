@@ -37,7 +37,7 @@ def main():
 
     print( "Generating speedup figure..." )
     gen_speedup_figure( var_resources, [ "MPI_static", "MPI_dynamic", "OpenMP_static", "OpenMP_dynamic" ], [ "r", "g", "b", "m" ] )
-    gen_speedup_figure( var_resources, [ "MPI_dynamic", "MPI_Pthread_dynamic" ], [ "r", "g" ], "_refacator" )
+    gen_speedup_figure( var_resources, [ "MPI_dynamic", "MPI_Pthread_dynamic" ], [ "r", "g" ], "_refactor" )
 
     print( "Generating Scalability figure..." )
     gen_exec_figure( var_resources )
