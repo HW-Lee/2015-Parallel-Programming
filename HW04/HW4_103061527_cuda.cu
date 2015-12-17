@@ -1,33 +1,109 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <cuda_runtime.h>
 
-#define NUM_THREADS 500
-#define INF (int) 1 << 29
+#define INF (int) 1 << 24
+
+__device__ __host__ int ij2ind(int i, int j, int N) {
+    return i*N+j;
+}
 
 int* Dist;
 int* Dist_d;
 
-__host__ __device__ int ij2ind(int i, int j, int N) {
-    return i*N+j;
-}
+__global__ void updateList(int* D, int blocksize, int N, int r, int blockDimWidth, int phase) {
+    int bi, bj;
+    switch(phase) {
+        case 0:
+            bi = r;
+            bj = r;
+            break;
+        case 1:
+            if (blockIdx.x == 1) {
+                bj = r;
+                bi = (r + blockIdx.y + 1) % (int) ceil((double) N/blocksize);
+            } else {
+                bi = r;
+                bj = (r + blockIdx.y + 1) % (int) ceil((double) N/blocksize);
+            }
+            break;
+        case 2:
+            bi = (r + blockIdx.y + 1) % (int) ceil((double) N/blocksize);
+            bj = (r + blockIdx.x + 1) % (int) ceil((double) N/blocksize);
+            break;
+    }
+    extern __shared__ int DS[];
 
-__global__ void updateList(int* list, int N, int k) {
-    int idx = threadIdx.x + blockIdx.x * blockDim.x;
-    int i = idx / N;
-    int j = idx % N;
-    if (i < N && j < N && list[ij2ind(i, j, N)] > list[ij2ind(i, k, N)] + list[ij2ind(k, j, N)])
-        list[ij2ind(i, j, N)] = list[ij2ind(i, k, N)] + list[ij2ind(k, j, N)];
+    int offset_i = blocksize * bi;
+    int offset_j = blocksize * bj;
+
+    // DS[0:bibs-1][:] = B[bi][bj] = D[bibs:(bi+1)bs-1][bjbs:(bj+1)bs-1]
+    // DS[bibs:2bibs-1][:] = B[bi][r] = D[bibs:(bi+1)bs-1][rbs:(r+1)bs-1]
+    // DS[2bibs:3bibs-1][:] = B[r][bi] = D[rbs:(r+1)bs-1][bjbs:(bj+1)bs-1]
+    for (int i = threadIdx.y; i < blocksize && i+offset_i < N; i+=blockDimWidth) {
+        for (int j = threadIdx.x; j < blocksize && j+offset_j < N; j+=blockDimWidth) {
+            DS[ij2ind(i, j, blocksize)] = D[ij2ind(i+offset_i, j+offset_j, N)];
+            DS[ij2ind(i+blocksize, j, blocksize)] = D[ij2ind(i+offset_i, j+blocksize*r, N)];
+            DS[ij2ind(i+2*blocksize, j, blocksize)] = D[ij2ind(i+blocksize*r, j+offset_j, N)];
+        }
+    }
+    __syncthreads();
+
+    // DS[i][j] = min{ DS[i][j], DS[k+bs][j] + DS[i+2bs][k] }
+    for (int k = 0; k < blocksize; k++) {
+        for (int i = threadIdx.y; i < blocksize && i+offset_i < N; i+=blockDimWidth) {
+            for (int j = threadIdx.x; j < blocksize && j+offset_j < N; j+=blockDimWidth) {
+                if (DS[ij2ind(i, j, blocksize)] > DS[ij2ind(i+blocksize, k, blocksize)] + DS[ij2ind(k+2*blocksize, j, blocksize)]) {
+                    DS[ij2ind(i, j, blocksize)] = DS[ij2ind(i+blocksize, k, blocksize)] + DS[ij2ind(k+2*blocksize, j, blocksize)];
+                    if (r == bi) DS[ij2ind(i+2*blocksize, j, blocksize)] = DS[ij2ind(i, j, blocksize)];
+                    if (r == bj) DS[ij2ind(i+blocksize, j, blocksize)] = DS[ij2ind(i, j, blocksize)];
+                }
+            }
+        }
+        __syncthreads();
+    }
+
+    for (int i = threadIdx.y; i < blocksize && i+offset_i < N; i+=blockDimWidth) {
+        for (int j = threadIdx.x; j < blocksize && j+offset_j < N; j+=blockDimWidth) {
+            // DS[i][j] = D[i+bsbi][j+bsbj]
+            D[ij2ind(i+offset_i, j+offset_j, N)] = DS[ij2ind(i, j, blocksize)];
+        }
+    }   
 }
 
 int main(int argc, char* argv[]) {
+    int dev = 0;
+    cudaSetDevice(dev);
+    cudaDeviceProp dp;
+    cudaGetDeviceProperties(&dp, dev);
+
+    printf("dp.sharedMemPerBlock = %d\n", dp.sharedMemPerBlock);
+    printf("dp.maxThreadsPerBlock = %d\n", dp.maxThreadsPerBlock);
+    printf("dp.maxThreadsDim = (%d, %d, %d)\n", dp.maxThreadsDim[0], dp.maxThreadsDim[1], dp.maxThreadsDim[2]);
+    printf("dp.maxGridSize = (%d, %d, %d)\n", dp.maxGridSize[0], dp.maxGridSize[1], dp.maxGridSize[2]);
+
+    int blockDimWidth = (int) sqrt(dp.maxThreadsPerBlock);
+    dim3 block(blockDimWidth, blockDimWidth);
+
+    if (argc < 3) {
+        printf("not enough arguments.\n");
+        return 0;
+    }
+
+    int blocksize;
+    if (argc >= 4) blocksize = atoi(argv[3]);
+    else blocksize = blockDimWidth;
+
+    // TODO: Read file and get meta data
     FILE *infile = fopen(argv[1], "r");
     int m;
     int N;
     fscanf(infile, "%d %d", &N, &m);
 
+    if (blocksize > N) blocksize = N;
+
     // TODO: Allocate memory (pinned/unpinned)
-    // Dist = (int*) malloc(sizeof(int) * N*N);
     cudaMallocHost((void**) &Dist, sizeof(int) * N*N);
     cudaMalloc((void**) &Dist_d, sizeof(int) * N*N);
 
@@ -49,19 +125,27 @@ int main(int argc, char* argv[]) {
     cudaMemcpy((void*) Dist_d, (void*) Dist, sizeof(int) * N*N, cudaMemcpyHostToDevice);
 
     // TODO: Updating list
-    int num_blocks = N*N / NUM_THREADS + 1;
-    for (int k = 0; k < N; k++) {
-        updateList<<< num_blocks, NUM_THREADS >>>(Dist_d, N, k);
+    int num_blocks_per_column = (int) ceil((double) N/blocksize);
+    dim3 grid_1(2, num_blocks_per_column-1);
+    dim3 grid_2(num_blocks_per_column-1, num_blocks_per_column-1);
+    for (int r = 0; r < num_blocks_per_column; r++) {
+        printf("\rCompute progress: %.2f%%", (float) r/num_blocks_per_column*100);
+        updateList<<< 1, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_d, blocksize, N, r, blockDimWidth, 0);
+        updateList<<< grid_1, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_d, blocksize, N, r, blockDimWidth, 1);
+        updateList<<< grid_2, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_d, blocksize, N, r, blockDimWidth, 2);
     }
+    printf("\n");
 
     // TODO: Copy final values
     cudaMemcpy((void*) Dist, (void*) Dist_d, sizeof(int) * N*N, cudaMemcpyDeviceToHost);
 
+    // TODO: Write file
+    printf("Writing the file...\n");
     FILE *outfile = fopen(argv[2], "w");
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
             if (Dist[ij2ind(i, j, N)] >= INF) fprintf(outfile, "INF ");
-            else                           fprintf(outfile, "%d ", Dist[ij2ind(i, j, N)]);
+            else                              fprintf(outfile, "%d ", Dist[ij2ind(i, j, N)]);
         }
         fprintf(outfile, "\n");
     }
