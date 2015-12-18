@@ -104,7 +104,7 @@ int main(int argc, char* argv[]) {
     fscanf(infile, "%d %d", &N, &m);
 
     if (blocksize > N) blocksize = N;
-    int N_ext = N + (blocksize - N % blocksize);
+    int N_ext = N + (blocksize - ((N-1) % blocksize + 1));
 
     // TODO: Allocate memory (pinned/unpinned)
     cudaMallocHost((void**) &Dist, sizeof(int) * N_ext*N_ext);
