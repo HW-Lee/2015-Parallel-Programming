@@ -80,11 +80,6 @@ int main(int argc, char* argv[]) {
     cudaDeviceProp dp;
     cudaGetDeviceProperties(&dp, dev);
 
-    // printf("dp.sharedMemPerBlock = %d\n", dp.sharedMemPerBlock);
-    // printf("dp.maxThreadsPerBlock = %d\n", dp.maxThreadsPerBlock);
-    // printf("dp.maxThreadsDim = (%d, %d, %d)\n", dp.maxThreadsDim[0], dp.maxThreadsDim[1], dp.maxThreadsDim[2]);
-    // printf("dp.maxGridSize = (%d, %d, %d)\n", dp.maxGridSize[0], dp.maxGridSize[1], dp.maxGridSize[2]);
-
     int blockDimWidth = (int) sqrt(dp.maxThreadsPerBlock);
     dim3 block(blockDimWidth, blockDimWidth);
 
@@ -128,20 +123,48 @@ int main(int argc, char* argv[]) {
         --a, --b;
         Dist[ij2ind(a, b, N_ext)] = v;
     }
+    fclose(infile);
 
     // TODO: Copy values loaded from the file
     cudaMemcpy((void*) Dist_d, (void*) Dist, sizeof(int) * N_ext*N_ext, cudaMemcpyHostToDevice);
 
     // TODO: Updating list
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    float phase1elapsed_millis = 0;
+    float phase2elapsed_millis = 0;
+    float phase3elapsed_millis = 0;
+    float t;
+
     int num_blocks_per_column = (int) ceil((double) N_ext/blocksize);
     dim3 grid_1(2, num_blocks_per_column-1);
     dim3 grid_2(num_blocks_per_column-1, num_blocks_per_column-1);
     for (int r = 0; r < num_blocks_per_column; r++) {
         printf("\rCompute progress: %.2f%%", (float) r/num_blocks_per_column*100);
+
+        cudaEventRecord(start);
         updateList<<< 1, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_d, blocksize, N_ext, r, blockDimWidth, 0);
+        cudaEventRecord(stop);
+        cudaEventSynchronize(stop);
+        cudaEventElapsedTime(&t, start, stop);
+        phase1elapsed_millis += t;
+
+        cudaEventRecord(start);
         updateList<<< grid_1, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_d, blocksize, N_ext, r, blockDimWidth, 1);
+        cudaEventRecord(stop);
+        cudaEventSynchronize(stop);
+        cudaEventElapsedTime(&t, start, stop);
+        phase2elapsed_millis += t;
+
+        cudaEventRecord(start);
         updateList<<< grid_2, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_d, blocksize, N_ext, r, blockDimWidth, 2);
-        cudaMemcpy((void*) Dist, (void*) Dist_d, sizeof(int), cudaMemcpyDeviceToHost);
+        cudaEventRecord(stop);
+        cudaEventSynchronize(stop);
+        cudaEventElapsedTime(&t, start, stop);
+        phase3elapsed_millis += t;
+
         printf("\rCompute progress: %.2f%%", (float) (r+1)/num_blocks_per_column*100);
     }
     printf("\n");
@@ -160,7 +183,10 @@ int main(int argc, char* argv[]) {
             }
             fprintf(outfile, "\n");
         }
+        fclose(outfile);
     }
+
+    printf("phase_elapsed = (%.2f, %.2f, %.2f) ms\n", phase1elapsed_millis, phase2elapsed_millis, phase3elapsed_millis);
 
     // TODO: Free memory
     cudaFreeHost(Dist);
