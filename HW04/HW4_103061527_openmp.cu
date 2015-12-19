@@ -100,11 +100,11 @@ int main(int argc, char* argv[]) {
 
     int blocksize;
     int MAX_BLOCKSIZE = (int) sqrt(dp.sharedMemPerBlock/3.0/sizeof(int));
+
     if (argc >= 4) blocksize = atoi(argv[3]);
     else blocksize = blockDimWidth;
 
     if (blocksize > MAX_BLOCKSIZE) blocksize = MAX_BLOCKSIZE;
-    if (blockDimWidth > blocksize) blockDimWidth = blocksize;
 
     // TODO: Read file and get meta data
     FILE *infile = fopen(argv[1], "r");
@@ -113,6 +113,7 @@ int main(int argc, char* argv[]) {
     fscanf(infile, "%d %d", &N, &m);
 
     if (blocksize > N) blocksize = N;
+    if (blockDimWidth > blocksize) blockDimWidth = blocksize;
     int N_ext = N + (blocksize - ((N-1) % blocksize + 1));
 
     dim3 block(blockDimWidth, blockDimWidth);
