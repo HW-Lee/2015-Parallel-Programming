@@ -14,7 +14,7 @@ __device__ __host__ int ij2ind(int i, int j, int N) {
 int* Dist;
 int** Dist_dt;
 
-__global__ void updateList(int* D, int blocksize, int N, int r, int blockDimWidth, int phase, int rowIdx) {
+__global__ void updateList(int* D, int blocksize, int N, int r, int blockDimWidth, int phase, int offset) {
     int bi, bj;
     switch(phase) {
         case 0:
@@ -31,8 +31,8 @@ __global__ void updateList(int* D, int blocksize, int N, int r, int blockDimWidt
             }
             break;
         case 2:
-            bi = (r + rowIdx + 1) % (int) ceil((double) N/blocksize);
-            bj = (r + blockIdx.y + 1) % (int) ceil((double) N/blocksize);
+            bi = blockIdx.x + offset;
+            bj = blockIdx.y;
             break;
     }
     extern __shared__ int DS[];
@@ -155,17 +155,32 @@ int main(int argc, char* argv[]) {
 
     int num_blocks_per_column = (int) ceil((double) N_ext/blocksize);
     dim3 grid_1(2, num_blocks_per_column-1);
-    dim3 grid_2(1, num_blocks_per_column-1);
 
     #pragma omp parallel num_threads(num_dev)
     {
         int t_id = omp_get_thread_num();
         cudaSetDevice(t_id);
 
+        int num_blocks_per_thread = num_blocks_per_column / num_dev;
+        int row_offset = num_blocks_per_thread * t_id * blocksize;
+        if (t_id == num_dev-1)
+            num_blocks_per_thread += num_blocks_per_column % num_dev;
+
+        dim3 grid_2(num_blocks_per_thread, num_blocks_per_column);
+
+        int cpy_idx = ij2ind(row_offset, 0, N_ext);
+        cudaMemcpy((void*) &(Dist_dt[t_id][cpy_idx]), (void*) &(Dist[cpy_idx]), sizeof(int) * N_ext*blocksize*num_blocks_per_thread, cudaMemcpyDeviceToHost);
+
         for (int r = 0; r < num_blocks_per_column; r++) {
             if (t_id == 0) printf("\rCompute progress: %.2f%%", (float) r/num_blocks_per_column*100);
 
-            cudaMemcpy((void*) Dist_dt[t_id], (void*) Dist, sizeof(int) * N_ext*N_ext, cudaMemcpyHostToDevice);
+            int r_idx = ij2ind(r * blocksize, 0, N_ext);
+            cudaMemcpy((void*) &(Dist_dt[t_id][r_idx]), (void*) &(Dist[r_idx]), sizeof(int) * N_ext * blocksize, cudaMemcpyHostToDevice);
+
+            for (int i = 0; i < N_ext; i++) {
+                r_idx = ij2ind(i, r * blocksize, N_ext);
+                cudaMemcpy((void*) &(Dist_dt[t_id][r_idx]), (void*) &(Dist[r_idx]), sizeof(int) * blocksize, cudaMemcpyHostToDevice);
+            }
 
             if (t_id == 0) cudaEventRecord(start);
             updateList<<< 1, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_dt[t_id], blocksize, N_ext, r, blockDimWidth, 0, -1);
@@ -186,22 +201,17 @@ int main(int argc, char* argv[]) {
             }
 
             if (t_id == 0) cudaEventRecord(start);
-            if (t_id == 0) cudaMemcpy((void*) Dist, (void*) Dist_dt[0], sizeof(int) * N_ext*N_ext, cudaMemcpyDeviceToHost);
-            #pragma omp barrier
 
-            cudaMemcpy((void*) Dist_dt[t_id], (void*) Dist, sizeof(int) * N_ext*N_ext, cudaMemcpyHostToDevice);
-            #pragma omp for schedule(dynamic)
-            for (int i = 0; i < num_blocks_per_column-1; i++) {
-                updateList<<< grid_2, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_dt[t_id], blocksize, N_ext, r, blockDimWidth, 2, i);
-                int idx = ij2ind( ((r+1+i) % num_blocks_per_column)*blocksize, 0, N_ext );
-                cudaMemcpy((void*) &(Dist[idx]), (void*) &(Dist_dt[t_id][idx]), sizeof(int)*N_ext*blocksize, cudaMemcpyDeviceToHost);
-            }
+            updateList<<< grid_2, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_dt[t_id], blocksize, N_ext, r, blockDimWidth, 2, row_offset/blocksize);
+
             if (t_id == 0) {
                 cudaEventRecord(stop);
                 cudaEventSynchronize(stop);
                 cudaEventElapsedTime(&t, start, stop);
                 phase3elapsed_millis += t;
             }
+
+            cudaMemcpy((void*) &(Dist[cpy_idx]), (void*) &(Dist_dt[t_id][cpy_idx]), sizeof(int) * N_ext*blocksize*num_blocks_per_thread, cudaMemcpyDeviceToHost);
 
             if (t_id == 0) printf("\rCompute progress: %.2f%%", (float) (r+1)/num_blocks_per_column*100);
 
