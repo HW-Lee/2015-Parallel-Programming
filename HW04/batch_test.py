@@ -16,6 +16,8 @@ def main(executable):
 def run_cmd(params):
     executable, infile, blocksize, ans = params
     cmd = executable + " " + infile + " outfile " + str(blocksize) + " > /dev/null"
+
+    if executable.split("_")[-1] == "mpi": cmd = "/usr/lib64/mpich/bin/mpirun -np 2 -hostfile hostfile " + cmd
     
     sys.stdout.write("\rRun cmd: " + executable + " " + infile + " outfile " + str(blocksize) + " ")
     sys.stdout.flush()
