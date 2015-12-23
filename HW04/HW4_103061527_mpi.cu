@@ -185,11 +185,6 @@ int main(int argc, char* argv[]) {
         int r_idx = ij2ind(r * blocksize, 0, N_ext);
         cudaMemcpy((void*) &Dist_d[r_idx], (void*) &Dist[r_idx], sizeof(int) * N_ext * blocksize, cudaMemcpyHostToDevice);
 
-        for (int i = 0; i < N_ext; i++) {
-            r_idx = ij2ind(i, r * blocksize, N_ext);
-            cudaMemcpy((void*) &Dist_d[r_idx], (void*) &Dist[r_idx], sizeof(int) * blocksize, cudaMemcpyHostToDevice);
-        }
-
         if (rank == 0) cudaEventRecord(start);
         updateList<<< 1, block, sizeof(int) * 3*blocksize*blocksize >>>(Dist_d, blocksize, N_ext, r, blockDimWidth, 0, -1);
         if (rank == 0) {
