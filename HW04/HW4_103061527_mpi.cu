@@ -41,38 +41,29 @@ __global__ void updateList(int* D, int blocksize, int N, int r, int blockDimWidt
     int offset_j = blocksize * bj;
     int offset_r = blocksize * r;
 
+    int i = threadIdx.y;
+    int j = threadIdx.x;
+
     // DS[0:bibs-1][:] = B[bi][bj] = D[bibs:(bi+1)bs-1][bjbs:(bj+1)bs-1]
     // DS[bibs:2bibs-1][:] = B[bi][r] = D[bibs:(bi+1)bs-1][rbs:(r+1)bs-1]
     // DS[2bibs:3bibs-1][:] = B[r][bi] = D[rbs:(r+1)bs-1][bjbs:(bj+1)bs-1]
-    for (int i = threadIdx.y; i < blocksize; i+=blockDimWidth) {
-        for (int j = threadIdx.x; j < blocksize; j+=blockDimWidth) {
-            DS[ij2ind(i, j, blocksize)] = D[ij2ind(i+offset_i, j+offset_j, N)];
-            DS[ij2ind(i+blocksize, j, blocksize)] = D[ij2ind(i+offset_i, j+offset_r, N)];
-            DS[ij2ind(i+2*blocksize, j, blocksize)] = D[ij2ind(i+offset_r, j+offset_j, N)];
-        }
-    }
+    DS[ij2ind(i, j, blocksize)] = D[ij2ind(i+offset_i, j+offset_j, N)];
+    DS[ij2ind(i+blocksize, j, blocksize)] = D[ij2ind(i+offset_i, j+offset_r, N)];
+    DS[ij2ind(i+2*blocksize, j, blocksize)] = D[ij2ind(i+offset_r, j+offset_j, N)];
     __syncthreads();
 
     // DS[i][j] = min{ DS[i][j], DS[i+bs][k] + DS[k+2bs][j] }
     for (int k = 0; k < blocksize; k++) {
-        for (int i = threadIdx.y; i < blocksize; i+=blockDimWidth) {
-            for (int j = threadIdx.x; j < blocksize; j+=blockDimWidth) {
-                if (DS[ij2ind(i, j, blocksize)] > DS[ij2ind(i+blocksize, k, blocksize)] + DS[ij2ind(k+2*blocksize, j, blocksize)]) {
-                    DS[ij2ind(i, j, blocksize)] = DS[ij2ind(i+blocksize, k, blocksize)] + DS[ij2ind(k+2*blocksize, j, blocksize)];
-                    if (r == bi) DS[ij2ind(i+2*blocksize, j, blocksize)] = DS[ij2ind(i, j, blocksize)];
-                    if (r == bj) DS[ij2ind(i+blocksize, j, blocksize)] = DS[ij2ind(i, j, blocksize)];
-                }
-            }
+        if (DS[ij2ind(i, j, blocksize)] > DS[ij2ind(i+blocksize, k, blocksize)] + DS[ij2ind(k+2*blocksize, j, blocksize)]) {
+            DS[ij2ind(i, j, blocksize)] = DS[ij2ind(i+blocksize, k, blocksize)] + DS[ij2ind(k+2*blocksize, j, blocksize)];
+            if (r == bi) DS[ij2ind(i+2*blocksize, j, blocksize)] = DS[ij2ind(i, j, blocksize)];
+            if (r == bj) DS[ij2ind(i+blocksize, j, blocksize)] = DS[ij2ind(i, j, blocksize)];
         }
         __syncthreads();
     }
 
-    for (int i = threadIdx.y; i < blocksize; i+=blockDimWidth) {
-        for (int j = threadIdx.x; j < blocksize; j+=blockDimWidth) {
-            // DS[i][j] = D[i+bsbi][j+bsbj]
-            D[ij2ind(i+offset_i, j+offset_j, N)] = DS[ij2ind(i, j, blocksize)];
-        }
-    }
+    // DS[i][j] = D[i+bsbi][j+bsbj]
+    D[ij2ind(i+offset_i, j+offset_j, N)] = DS[ij2ind(i, j, blocksize)];
 }
 
 int main(int argc, char* argv[]) {
@@ -100,7 +91,7 @@ int main(int argc, char* argv[]) {
     }
 
     int blocksize;
-    int MAX_BLOCKSIZE = (int) sqrt(dp.sharedMemPerBlock/3.0/sizeof(int));
+    int MAX_BLOCKSIZE = blockDimWidth;
 
     if (argc >= 4) blocksize = atoi(argv[3]);
     else blocksize = blockDimWidth;
@@ -119,7 +110,7 @@ int main(int argc, char* argv[]) {
         // Send N: MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
         MPI_Send(&N, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
     } else {
-         // Recv N: MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status)
+        // Recv N: MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status)
         MPI_Recv(&N, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
 
@@ -244,7 +235,7 @@ int main(int argc, char* argv[]) {
         MPI_Recv(&Dist[recv_idx], recv_cnt, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Send(&Dist[send_idx], send_cnt, MPI_INT, 0, 0, MPI_COMM_WORLD);
     }
-    
+
     MPI_Barrier(MPI_COMM_WORLD);
 
     printf("\n");
