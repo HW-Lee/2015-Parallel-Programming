@@ -183,6 +183,16 @@ int main(int argc, char* argv[]) {
         if (rank == 0) printf("\rCompute progress: %.2f%%", (float) r/num_blocks_per_column*100);
 
         int r_idx = ij2ind(r * blocksize, 0, N_ext);
+
+        if (r >= row_offset/blocksize && r < (row_offset/blocksize + num_blocks_per_thread)) {
+            cudaMemcpy((void*) &(Dist[r_idx]), (void*) &(Dist_d[r_idx]), sizeof(int) * N_ext * blocksize, cudaMemcpyDeviceToHost);
+            // MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
+            MPI_Send(&Dist[r_idx], N_ext * blocksize, MPI_INT, (rank+1)%2, 0, MPI_COMM_WORLD);
+        } else {
+            // MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status)
+            MPI_Recv(&Dist[r_idx], N_ext * blocksize, MPI_INT, (rank+1)%2, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+
         cudaMemcpy((void*) &Dist_d[r_idx], (void*) &Dist[r_idx], sizeof(int) * N_ext * blocksize, cudaMemcpyHostToDevice);
 
         if (rank == 0) cudaEventRecord(start);
@@ -214,31 +224,29 @@ int main(int argc, char* argv[]) {
             phase3elapsed_millis += t;
         }
 
-        cudaMemcpy((void*) &Dist[cpy_idx], (void*) &Dist_d[cpy_idx], sizeof(int) * N_ext*blocksize*num_blocks_per_thread, cudaMemcpyDeviceToHost);
-
         if (rank == 0) printf("\rCompute progress: %.2f%%", (float) (r+1)/num_blocks_per_column*100);
-
-        // Exchange the results
-        // MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
-        // MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status)
-        if (rank == 0) {
-            int send_idx = 0;
-            int send_cnt = N_ext*blocksize*num_blocks_per_thread;
-            int recv_idx = ij2ind(num_blocks_per_thread * blocksize, 0, N_ext);
-            int recv_cnt = N_ext*blocksize*(num_blocks_per_thread + num_blocks_per_column % size);
-            MPI_Send(&Dist[send_idx], send_cnt, MPI_INT, 1, 0, MPI_COMM_WORLD);
-            MPI_Recv(&Dist[recv_idx], recv_cnt, MPI_INT, 1, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        } else {
-            int recv_idx = 0;
-            int recv_cnt = N_ext*blocksize*(num_blocks_per_thread - num_blocks_per_column % size);
-            int send_idx = ij2ind((num_blocks_per_thread - num_blocks_per_column % size) * blocksize, 0, N_ext);
-            int send_cnt = N_ext*blocksize*num_blocks_per_thread;
-            MPI_Recv(&Dist[recv_idx], recv_cnt, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Send(&Dist[send_idx], send_cnt, MPI_INT, 0, 0, MPI_COMM_WORLD);
-        }
-
-        MPI_Barrier(MPI_COMM_WORLD);
     }
+
+    cudaMemcpy((void*) &Dist[cpy_idx], (void*) &Dist_d[cpy_idx], sizeof(int) * N_ext*blocksize*num_blocks_per_thread, cudaMemcpyDeviceToHost);
+
+    if (rank == 0) {
+        int send_idx = 0;
+        int send_cnt = N_ext*blocksize*num_blocks_per_thread;
+        int recv_idx = ij2ind(num_blocks_per_thread * blocksize, 0, N_ext);
+        int recv_cnt = N_ext*blocksize*(num_blocks_per_thread + num_blocks_per_column % size);
+        MPI_Send(&Dist[send_idx], send_cnt, MPI_INT, 1, 0, MPI_COMM_WORLD);
+        MPI_Recv(&Dist[recv_idx], recv_cnt, MPI_INT, 1, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    } else {
+        int recv_idx = 0;
+        int recv_cnt = N_ext*blocksize*(num_blocks_per_thread - num_blocks_per_column % size);
+        int send_idx = ij2ind((num_blocks_per_thread - num_blocks_per_column % size) * blocksize, 0, N_ext);
+        int send_cnt = N_ext*blocksize*num_blocks_per_thread;
+        MPI_Recv(&Dist[recv_idx], recv_cnt, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Send(&Dist[send_idx], send_cnt, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    }
+    
+    MPI_Barrier(MPI_COMM_WORLD);
+
     printf("\n");
 
     // TODO: Write file

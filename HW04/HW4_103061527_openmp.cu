@@ -175,6 +175,12 @@ int main(int argc, char* argv[]) {
             if (t_id == 0) printf("\rCompute progress: %.2f%%", (float) r/num_blocks_per_column*100);
 
             int r_idx = ij2ind(r * blocksize, 0, N_ext);
+
+            if (r >= row_offset/blocksize && r < (row_offset/blocksize + num_blocks_per_thread)) {
+                cudaMemcpy((void*) &(Dist[r_idx]), (void*) &(Dist_dt[t_id][r_idx]), sizeof(int) * N_ext * blocksize, cudaMemcpyDeviceToHost);
+            }
+            #pragma omp barrier
+
             cudaMemcpy((void*) &(Dist_dt[t_id][r_idx]), (void*) &(Dist[r_idx]), sizeof(int) * N_ext * blocksize, cudaMemcpyHostToDevice);
 
             if (t_id == 0) cudaEventRecord(start);
@@ -206,12 +212,11 @@ int main(int argc, char* argv[]) {
                 phase3elapsed_millis += t;
             }
 
-            cudaMemcpy((void*) &(Dist[cpy_idx]), (void*) &(Dist_dt[t_id][cpy_idx]), sizeof(int) * N_ext*blocksize*num_blocks_per_thread, cudaMemcpyDeviceToHost);
-
             if (t_id == 0) printf("\rCompute progress: %.2f%%", (float) (r+1)/num_blocks_per_column*100);
-
-            #pragma omp barrier
         }
+
+        cudaMemcpy((void*) &(Dist[cpy_idx]), (void*) &(Dist_dt[t_id][cpy_idx]), sizeof(int) * N_ext*blocksize*num_blocks_per_thread, cudaMemcpyDeviceToHost);
+        #pragma omp barrier
     }
     printf("\n");
 
