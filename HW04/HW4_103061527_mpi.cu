@@ -247,7 +247,7 @@ int main(int argc, char* argv[]) {
     printf("\n");
 
     // TODO: Write file
-    if (OUTFILE == 1 && rank == 0) {
+    if (OUTFILE == 1 && rank == 0 && argc <= 4) {
         printf("Writing the file...\n");
         FILE *outfile = fopen(argv[2], "w");
         for (int i = 0; i < N; ++i) {

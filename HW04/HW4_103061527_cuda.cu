@@ -181,7 +181,7 @@ int main(int argc, char* argv[]) {
     cudaMemcpy((void*) Dist, (void*) Dist_d, sizeof(int) * N_ext*N_ext, cudaMemcpyDeviceToHost);
 
     // TODO: Write file
-    if (OUTFILE == 1) {
+    if (OUTFILE == 1 && argc <= 4) {
         printf("Writing the file...\n");
         FILE *outfile = fopen(argv[2], "w");
         for (int i = 0; i < N; ++i) {
