@@ -1,0 +1,761 @@
+{
+    "weak-scalibility": {
+        "command": "./a.out input output 32",
+        "single": [
+            {
+                "size": 200,
+                "phase-elapsed": [0.41, 0.37, 0.51],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 0.55368,
+                            "[CUDA memcpy HtoD]": 0.044066,
+                            "[CUDA memcpy DtoH]": 0.032066
+                        }
+                    }
+                ]
+            }, {
+                "size": 400,
+                "phase-elapsed": [0.54, 0.60, 1.95],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 2.2364,
+                            "[CUDA memcpy HtoD]": 0.11802,
+                            "[CUDA memcpy DtoH]": 0.10570
+                        }
+                    }
+                ]
+            }, {
+                "size": 600,
+                "phase-elapsed": [0.77, 1.13, 5.38],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 6.0852,
+                            "[CUDA memcpy HtoD]": 0.24680,
+                            "[CUDA memcpy DtoH]": 0.22305
+                        }
+                    }
+                ]
+            }, {
+                "size": 800,
+                "phase-elapsed": [1.04, 1.67, 12.12],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 13.070,
+                            "[CUDA memcpy HtoD]": 0.43567,
+                            "[CUDA memcpy DtoH]": 0.38408
+                        }
+                    }
+                ]
+            }, {
+                "size": 1000,
+                "phase-elapsed": [1.32, 2.50, 24.62],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                        	"updateList": 26.351,
+                        	"[CUDA memcpy HtoD]": 0.70067,
+                        	"[CUDA memcpy DtoH]": 0.62723
+                        }
+                    }
+                ]
+            }, {
+                "size": 2000,
+                "phase-elapsed": [2.65, 7.88, 184.86],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                        	"updateList": 190.84,
+                        	"[CUDA memcpy HtoD]": 2.7057,
+                        	"[CUDA memcpy DtoH]": 2.4239
+                        }
+                    }
+                ]
+            }, {
+                "size": 3000,
+                "phase-elapsed": [3.86, 16.08, 608.23],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 622.12,
+                            "[CUDA memcpy HtoD]": 5.9854,
+                            "[CUDA memcpy DtoH]": 5.4047
+                        }
+                    }
+                ]
+            }, {
+                "size": 4000,
+                "phase-elapsed": [4.97, 26.96, 1425.17],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 1449.52,
+                            "[CUDA memcpy HtoD]": 10.633,
+                            "[CUDA memcpy DtoH]": 9.5321
+                        }
+                    }
+                ]
+            }, {
+                "size": 5000,
+                "phase-elapsed": [6.22, 40.11, 2817.05],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 2854.20,
+                            "[CUDA memcpy HtoD]": 16.744,
+                            "[CUDA memcpy DtoH]": 15.035
+                        }
+                    }
+                ]
+            }, {
+                "size": 6000,
+                "phase-elapsed": [7.26, 56.46, 4832.72],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 4885.86,
+                            "[CUDA memcpy HtoD]": 23.973,
+                            "[CUDA memcpy DtoH]": 21.634
+                        }
+                    }
+                ]
+            }, {
+                "size": 7000,
+                "phase-elapsed": [8.42, 75.90, 7634.45],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 7706.65,
+                            "[CUDA memcpy HtoD]": 32.558,
+                            "[CUDA memcpy DtoH]": 29.251
+                        }
+                    }
+                ]
+            }, {
+                "size": 8000,
+                "phase-elapsed": [10.23, 98.22, 11332.63],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 11426.2,
+                            "[CUDA memcpy HtoD]": 42.633,
+                            "[CUDA memcpy DtoH]": 38.229
+                        }
+                    }
+                ]
+            }, {
+                "size": 9000,
+                "phase-elapsed": [11.36, 123.57, 16246.42],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 16365.0,
+                            "[CUDA memcpy HtoD]": 53.948,
+                            "[CUDA memcpy DtoH]": 48.500
+                        }
+                    }
+                ]
+            }, {
+                "size": 10000,
+                "phase-elapsed": [13.03, 150.47, 22200.09],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 22344.7,
+                            "[CUDA memcpy HtoD]": 66.492,
+                            "[CUDA memcpy DtoH]": 59.762
+                        }
+                    }
+                ]
+            }
+        ],
+        "multi": [
+            {
+                "size": 200,
+                "phase-elapsed": [0.34, 0.30, 0.33],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 0.45912,
+                            "[CUDA memcpy HtoD]": 0.067299,
+                            "[CUDA memcpy DtoH]": 0.034274
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 0.52571,
+                            "[CUDA memcpy HtoD]": 0.070019,
+                            "[CUDA memcpy DtoH]": 0.044001
+                        }
+                    }
+                ]
+            }, {
+                "size": 400,
+                "phase-elapsed": [0.59, 0.64, 1.15],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 1.4571,
+                            "[CUDA memcpy HtoD]": 0.20244,
+                            "[CUDA memcpy DtoH]": 0.11073
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 1.5788,
+                            "[CUDA memcpy HtoD]": 0.20423,
+                            "[CUDA memcpy DtoH]": 0.12804
+                        }
+                    }
+                ]
+            }, {
+                "size": 600,
+                "phase-elapsed": [0.84, 1.20, 3.12],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 3.8385,
+                            "[CUDA memcpy HtoD]": 0.40825,
+                            "[CUDA memcpy DtoH]": 0.23153
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 4.0319,
+                            "[CUDA memcpy HtoD]": 0.40773,
+                            "[CUDA memcpy DtoH]": 0.25406
+                        }
+                    }
+                ]
+            }, {
+                "size": 800,
+                "phase-elapsed": [1.01, 1.66, 6.43],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 7.6177,
+                            "[CUDA memcpy HtoD]": 0.69168,
+                            "[CUDA memcpy DtoH]": 0.39605
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 7.9966,
+                            "[CUDA memcpy HtoD]": 0.68543,
+                            "[CUDA memcpy DtoH]": 0.42805
+                        }
+                    }
+                ]
+            }, {
+                "size": 1000,
+                "phase-elapsed": [1.44, 2.60, 13.37],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 15.132,
+                            "[CUDA memcpy HtoD]": 1.1175,
+                            "[CUDA memcpy DtoH]": 0.66371
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 15.141,
+                            "[CUDA memcpy HtoD]": 1.0795,
+                            "[CUDA memcpy DtoH]": 0.66774
+                        }
+                    }
+                ]
+            }, {
+                "size": 2000,
+                "phase-elapsed": [2.81, 8.20, 92.52],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 99.128,
+                            "[CUDA memcpy HtoD]": 4.1581,
+                            "[CUDA memcpy DtoH]": 2.4655
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 101.84,
+                            "[CUDA memcpy HtoD]": 4.7822,
+                            "[CUDA memcpy DtoH]": 4.0351
+                        }
+                    }
+                ]
+            }, {
+                "size": 3000,
+                "phase-elapsed": [4.21, 16.64, 304.56],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 318.85,
+                            "[CUDA memcpy HtoD]": 9.1914,
+                            "[CUDA memcpy DtoH]": 5.5257
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 318.78,
+                            "[CUDA memcpy HtoD]": 16.590,
+                            "[CUDA memcpy DtoH]": 8.8406
+                        }
+                    }
+                ]
+            }, {
+                "size": 4000,
+                "phase-elapsed": [5.31, 28.03, 703.41],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 727.67,
+                            "[CUDA memcpy HtoD]": 16.169,
+                            "[CUDA memcpy DtoH]": 9.6896
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 738.84,
+                            "[CUDA memcpy HtoD]": 15.495,
+                            "[CUDA memcpy DtoH]": 15.172
+                        }
+                    }
+                ]
+            }, {
+                "size": 5000,
+                "phase-elapsed": [6.53, 41.71, 1383.44],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 1420.72,
+                            "[CUDA memcpy HtoD]": 25.363,
+                            "[CUDA memcpy DtoH]": 15.151
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 1438.06,
+                            "[CUDA memcpy HtoD]": 24.550,
+                            "[CUDA memcpy DtoH]": 16.850
+                        }
+                    }
+                ]
+            }, {
+                "size": 6000,
+                "phase-elapsed": [7.70, 58.63, 2376.82],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 2430.67,
+                            "[CUDA memcpy HtoD]": 36.391,
+                            "[CUDA memcpy DtoH]": 21.821
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 2431.15,
+                            "[CUDA memcpy HtoD]": 34.711,
+                            "[CUDA memcpy DtoH]": 28.732
+                        }
+                    }
+                ]
+            }, {
+                "size": 7000,
+                "phase-elapsed": [9.71, 79.80, 3732.32],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 3805.50,
+                            "[CUDA memcpy HtoD]": 49.212,
+                            "[CUDA memcpy DtoH]": 29.466
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 3839.53,
+                            "[CUDA memcpy HtoD]": 47.180,
+                            "[CUDA memcpy DtoH]": 34.379
+                        }
+                    }
+                ]
+            }, {
+                "size": 8000,
+                "phase-elapsed": [11.51, 103.10, 5557.34],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 5652.80,
+                            "[CUDA memcpy HtoD]": 64.138,
+                            "[CUDA memcpy DtoH]": 38.588
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 5653.16,
+                            "[CUDA memcpy HtoD]": 72.173,
+                            "[CUDA memcpy DtoH]": 61.284
+                        }
+                    }
+                ]
+            }, {
+                "size": 9000,
+                "phase-elapsed": [12.76, 129.07, 7957.09],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 8078.18,
+                            "[CUDA memcpy HtoD]": 82.072,
+                            "[CUDA memcpy DtoH]": 50.914
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 8075.96,
+                            "[CUDA memcpy HtoD]": 77.956,
+                            "[CUDA memcpy DtoH]": 49.069
+                        }
+                    }
+                ]
+            }, {
+                "size": 10000,
+                "phase-elapsed": [12.82, 155.07, 10827.62],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 10976.3,
+                            "[CUDA memcpy HtoD]": 100.22,
+                            "[CUDA memcpy DtoH]": 60.024
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 11045.7,
+                            "[CUDA memcpy HtoD]": 96.746,
+                            "[CUDA memcpy DtoH]": 82.038
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "blocking-factor": {
+        "size": 6000,
+        "seq": 475000,
+        "single": [
+            {
+                "factor": 2,
+                "phase-elapsed": [80.37, 309.75, 354639.59],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 354850,
+                            "[CUDA memcpy HtoD]": 23.999,
+                            "[CUDA memcpy DtoH]": 21.543
+                        }
+                    }
+                ]
+            }, {
+                "factor": 4,
+                "phase-elapsed": [38.05, 107.62, 55003.81],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 55068.4,
+                            "[CUDA memcpy HtoD]": 24.008,
+                            "[CUDA memcpy DtoH]": 21.502
+                        }
+                    }
+                ]
+            }, {
+                "factor": 8,
+                "phase-elapsed": [20.18, 43.31, 9195.34],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 9209.81,
+                            "[CUDA memcpy HtoD]": 373.74,
+                            "[CUDA memcpy DtoH]": 24.023
+                        }
+                    }
+                ]
+            }, {
+                "factor": 16,
+                "phase-elapsed": [10.62, 33.20, 4549.80],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 4570.34,
+                            "[CUDA memcpy HtoD]": 24.017,
+                            "[CUDA memcpy DtoH]": 21.510
+                        }
+                    }
+                ]
+            }, {
+                "factor": 32,
+                "phase-elapsed": [7.70, 56.71, 4834.95],
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 4886.53,
+                            "[CUDA memcpy HtoD]": 24.003,
+                            "[CUDA memcpy DtoH]": 21.579
+                        }
+                    }
+                ]
+            }
+        ],
+        "omp": [
+            {
+                "factor": 2,
+                "phase-elapsed": [82.96, 304.82, 123067.89],
+                "mem-bw": 4.6119,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 123282,
+                            "[CUDA memcpy HtoD]": 42.392,
+                            "[CUDA memcpy DtoH]": 24.741
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 123287,
+                            "[CUDA memcpy HtoD]": 42.108,
+                            "[CUDA memcpy DtoH]": 25.155
+                        }
+                    }
+                ]
+            }, {
+                "factor": 4,
+                "phase-elapsed": [45.00, 107.85, 21096.13],
+                "mem-bw": 5.5378,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 21150.7,
+                            "[CUDA memcpy HtoD]": 39.272,
+                            "[CUDA memcpy DtoH]": 23.260
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 21158.4,
+                            "[CUDA memcpy HtoD]": 37.792,
+                            "[CUDA memcpy DtoH]": 23.231
+                        }
+                    }
+                ]
+            }, {
+                "factor": 8,
+                "phase-elapsed": [21.58, 42.73, 4058.65],
+                "mem-bw": 5.9467,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 4075.50,
+                            "[CUDA memcpy HtoD]": 37.531,
+                            "[CUDA memcpy DtoH]": 22.408
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 4076.44,
+                            "[CUDA memcpy HtoD]": 36.046,
+                            "[CUDA memcpy DtoH]": 23.736
+                        }
+                    }
+                ]
+            }, {
+                "factor": 16,
+                "phase-elapsed": [14.90, 37.40, 2105.94],
+                "mem-bw": 6.1513,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 2124.16,
+                            "[CUDA memcpy HtoD]": 36.663,
+                            "[CUDA memcpy DtoH]": 36.944
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 2135.99,
+                            "[CUDA memcpy HtoD]": 35.392,
+                            "[CUDA memcpy DtoH]": 33.333
+                        }
+                    }
+                ]
+            }, {
+                "factor": 32,
+                "phase-elapsed": [7.92, 58.93, 2376.13],
+                "mem-bw": 6.2973,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 2431.03,
+                            "[CUDA memcpy HtoD]": 36.995,
+                            "[CUDA memcpy DtoH]": 21.791
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 2431.05,
+                            "[CUDA memcpy HtoD]": 34.802,
+                            "[CUDA memcpy DtoH]": 21.854
+                        }
+                    }
+                ]
+            }
+        ],
+        "mpi": [
+            {
+                "factor": 2,
+                "phase-elapsed": [88.97, 323.45, 123030.88],
+                "mem-bw": 4.8454,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 123227,
+                            "[CUDA memcpy HtoD]": 42.968,
+                            "[CUDA memcpy DtoH]": 25.092
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 123272,
+                            "[CUDA memcpy HtoD]": 41.916,
+                            "[CUDA memcpy DtoH]": 25.348
+                        }
+                    }
+                ]
+            }, {
+                "factor": 4,
+                "phase-elapsed": [46.74, 117.19, 21098.56],
+                "mem-bw": 5.5492,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 21150.7,
+                            "[CUDA memcpy HtoD]": 39.574,
+                            "[CUDA memcpy DtoH]": 24.008
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 21154.8,
+                            "[CUDA memcpy HtoD]": 49.699,
+                            "[CUDA memcpy DtoH]": 38.587
+                        }
+                    }
+                ]
+            }, {
+                "factor": 8,
+                "phase-elapsed": [25.90, 43.42, 4059.58],
+                "mem-bw": 5.9124,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 4078.38,
+                            "[CUDA memcpy HtoD]": 38.916,
+                            "[CUDA memcpy DtoH]": 22.445
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 4078.06,
+                            "[CUDA memcpy HtoD]": 37.676,
+                            "[CUDA memcpy DtoH]": 22.408
+                        }
+                    }
+                ]
+            }, {
+                "factor": 16,
+                "phase-elapsed": [12.46, 34.12, 2103.97],
+                "mem-bw": 6.1625,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 2125.85,
+                            "[CUDA memcpy HtoD]": 36.763,
+                            "[CUDA memcpy DtoH]": 22.242
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 2147.68,
+                            "[CUDA memcpy HtoD]": 35.181,
+                            "[CUDA memcpy DtoH]": 35.814
+                        }
+                    }
+                ]
+            }, {
+                "factor": 32,
+                "phase-elapsed": [8.43, 58.75, 2380.61],
+                "mem-bw": 6.2681,
+                "detail": [
+                    {
+                        "dev-name": "Tesla K20m (0)",
+                        "elapsed": {
+                            "updateList": 2435.58,
+                            "[CUDA memcpy HtoD]": 36.843,
+                            "[CUDA memcpy DtoH]": 22.729
+                        }
+                    }, {
+                        "dev-name": "Tesla K20m (1)",
+                        "elapsed": {
+                            "updateList": 2433.58,
+                            "[CUDA memcpy HtoD]": 35.284,
+                            "[CUDA memcpy DtoH]": 35.308
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
